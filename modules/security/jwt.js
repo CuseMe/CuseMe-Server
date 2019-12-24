@@ -38,14 +38,5 @@ module.exports = {
             }
         }
         return decoded;
-<<<<<<< HEAD
-    },
-    refresh: (user) => {
-        const payload = {
-            idx: user.idx
-        };
-        return jwt.sign(payload, secretOrPrivateKey, options);
-=======
->>>>>>> 4114d11cd60886e4673c2b8dc9e2fb14b9c38c38
     }
 };

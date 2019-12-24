@@ -1,0 +1,64 @@
+const jwt = require('jsonwebtoken');
+
+const {
+    secretOrPrivateKey
+} = require('../../config/secretKey');
+const resMessage = require('../utils/responseMessage');
+const statusCode = require('../utils/statusCode');
+
+const options = {
+    algorithm: "HS256",
+    expiresIn: "24h",
+    issuer: "ganghee"
+};
+
+module.exports = {
+    publish: (payload) => {
+        const token = jwt.sign(payload, secretOrPrivateKey, options);
+        const refreshToken = jwt.sign({
+            refreshToken: payload
+        }, secretOrPrivateKey, refreshOptions);
+        return {
+            token,
+            refreshToken
+        };
+    },
+    create: (payload) => {
+        return jwt.sign(payload, secretOrPrivateKey, options);
+    },
+    verify: (token) => {
+        try {
+            const data = jwt.verify(token, secretOrPrivateKey);
+            return {
+                isError: false,
+                data
+            };
+        } catch (err) {
+            if (err.message === 'jwt expired') {
+                console.log('expired token');
+                return {
+                    isError: true,
+                    data: {
+                        code: statusCode.UNAUTHORIZED,
+                        json: resMessage.EXPIRED_TOKEN
+                    }
+                };
+            }
+            if (err.message === 'invalid token') {
+                console.log('invalid token');
+                return {
+                    isError: true,
+                    data: {
+                        code: statusCode.UNAUTHORIZED,
+                        json: resMessage.INVALID_TOKEN
+                    }
+                };
+            }
+            console.log(err);
+            return {
+                isError: true,
+                data: err
+            };
+        }
+    }
+};
