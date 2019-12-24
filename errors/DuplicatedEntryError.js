@@ -13,4 +13,8 @@ class DuplicatedEntryError extends Error {
     }
 }
 
+<<<<<<< HEAD
 module.exports = DuplicatedEntryError;
+=======
+module.exports = DuplicatedEntryError;
+>>>>>>> 4114d11cd60886e4673c2b8dc9e2fb14b9c38c38
