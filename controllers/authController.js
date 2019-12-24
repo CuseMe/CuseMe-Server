@@ -1,6 +1,6 @@
 //로그인 정보 
 const User = require('../model/user');
-const { util, status, message} = require('../modules/utils');
+const { util, status, message} = require('../modules/utils/util');
 const NAME = '사용자'; 
 
 module.exports = {
@@ -12,5 +12,4 @@ module.exports = {
         .catch(err => 
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
-
 }
