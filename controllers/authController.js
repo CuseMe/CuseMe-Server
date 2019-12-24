@@ -12,4 +12,5 @@ module.exports = {
         .catch(err => 
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
+
 }
