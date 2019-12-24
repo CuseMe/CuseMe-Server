@@ -11,9 +11,7 @@ module.exports = {
     //토큰 생성
     sign: (user) => {
         const payload = {
-            idx: user.idx,
-            grade: user.grade,
-            name: user.name
+            idx: user.idx
         };
         const result = {
             //json값인 payload. jwt.sign을 쓰면 토큰이 하나 만들어짐!
@@ -43,9 +41,7 @@ module.exports = {
     },
     refresh: (user) => {
         const payload = {
-            idx: user.idx,
-            grade: user.grade,
-            name: user.name
+            idx: user.idx
         };
         return jwt.sign(payload, secretOrPrivateKey, options);
     }
