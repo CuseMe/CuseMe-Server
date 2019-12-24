@@ -1,3 +1,4 @@
+//로그인 정보 
 const User = require('../model/user');
 const { util, status, message} = require('../modules/utils');
 const NAME = '사용자'; 

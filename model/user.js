@@ -1,4 +1,5 @@
-let moment = require('moment');
+//uuid를 통해서 signin하고 token발급
+//let moment = require('moment');
 const jwtExt = require('../modules/security/jwt-ext');
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/db/pool');
