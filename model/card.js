@@ -13,8 +13,8 @@ module.exports = {
         const result = await pool.queryParam_None(query);
         return result;
     },
-    create: async ({title, content, image, record, visible}, userIdx) => {
-        const fields = 'title, content, image, record';
+    create: async ({title, content, record, visible}, image, userIdx) => {
+        const fields = 'title, content, image, record, visible, userIdx';
         const questions = `?, ?, ?, ?, ?, ?`;
         const query = `INSERT INTO ${table}(${fields}) VALUES(${questions})`;
         const values = [title, content, image, record, visible, userIdx];
