@@ -13,4 +13,6 @@ class ExistedUserError extends Error {
     }
 }
 
+
 module.exports = ExistedUserError;
+

@@ -13,3 +13,4 @@ module.exports = {
     NotDeletedError: require('./NotDeletedError'),
     ExistedUserError: require('./ExistedUserError'),
 };
+

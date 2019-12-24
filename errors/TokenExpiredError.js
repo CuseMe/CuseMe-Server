@@ -13,4 +13,8 @@ class TokenExpiredError extends Error {
     }
 }
 
+<<<<<<< HEAD
 module.exports = TokenExpiredError;
+=======
+module.exports = TokenExpiredError;
+>>>>>>> 4114d11cd60886e4673c2b8dc9e2fb14b9c38c38

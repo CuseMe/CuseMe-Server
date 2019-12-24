@@ -1,4 +1,5 @@
-let moment = require('moment');
+//uuid를 통해서 signin하고 token발급
+//let moment = require('moment');
 const jwtExt = require('../modules/security/jwt-ext');
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/db/pool');
@@ -14,7 +15,6 @@ const TABLE = 'user';
 const NAME = "사용자";
 
 module.exports = {
-    
     signIn: async ({
         id
     }) => {
@@ -23,11 +23,11 @@ module.exports = {
         const getValues = [id];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new NotFoundError(NAME);
-        const salt = getResult[0].salt;
-        const hashedPassword = await encryptionManager.encryption(pw, salt);
-        if(getResult[0].userPw != hashedPassword) throw new MissPasswordError;
-        let date = moment(moment().unix()*1000).format("YYYY-MM-DD HH:mm:ss");
-        const jwtToken = jwtExt.publish({id,date});
+        //const salt = getResult[0].salt;
+        //const hashedPassword = await encryptionManager.encryption(pw, salt);
+        //if(getResult[0].userPw != hashedPassword) throw new MissPasswordError;
+        //let date = moment(moment().unix()*1000).format("YYYY-MM-DD HH:mm:ss");
+        const jwtToken = jwtExt.publish({id});
         return {token :jwtToken.token}
     }
 }
