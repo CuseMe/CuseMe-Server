@@ -1,5 +1,5 @@
 const pool = require('../modules/db/pool');
-const cardData = require('../modules/data/articleData');
+const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
 const { 
     AuthorizationError, 
@@ -20,7 +20,16 @@ const card = {
         //TODO: 카드 상세 조회
     }
     ,
-    create: {
+    count: {
+        //TODO: 카드 상세 조회
+    }
+    ,
+    create: async(
+        title,
+        content,
+        record,
+        visible
+    ) => {
         //TODO: 카드 생성
     }
     ,

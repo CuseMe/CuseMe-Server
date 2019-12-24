@@ -1,4 +1,4 @@
-const Article = require('../model/article');
+const Card = require('../model/card');
 const {util, status, message} = require('../modules/utils');
 const NAME = '카드';
 
@@ -9,6 +9,10 @@ module.exports = {
     ,
     read: async(req, res) => {
         //TODO: 카드 상세 조회
+    }
+    ,
+    count: async(req, res) => {
+        //TODO: 카드 실행 횟수 올리기
     }
     ,
     create: async(req, res) => {
