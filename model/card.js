@@ -12,14 +12,23 @@ const TABLE = 'card';
 const CARD = '카드';
 
 const card = {
-    readAll: {
-        //TODO: 카드 전체 조회
-    }
-    ,
-    read: {
-        //TODO: 카드 상세 조회
-    }
-    ,
+    read: async (cardIdx) => {
+        const query = `SELECT * FROM ${table} WHERE cardIdx = ${cardIdx}`;
+        const values = [cardIdx];
+        const result = await pool.queryParam_Parse(query, values);
+        if(result.length == 0) throw new NotFoundError(CARD);
+        const card = cardData(result[0]);
+        return card;
+    },
+    readAll: async () => {
+        const query = `SELECT * FROM ${table}`;
+        const result = await pool.queryParam_None(query);
+        if(result.length == 0) throw new NotFoundError(CARD);
+        const cardArr = [];
+        result.forEach((rawCard, index, cardError) => 
+            cardArr.push(cardData(rawCard)));
+        return cardArr;
+    },
     count: {
         //TODO: 카드 상세 조회
     }
