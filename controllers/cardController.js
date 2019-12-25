@@ -51,5 +51,15 @@ module.exports = {
     }
     ,
     delete: async(req, res) => {
+        Card.delete(req.body, req.headers.token)
+        .then(() => 
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_DELETE_SUCCESS))
+        )
+        .catch(err =>  {
+            console.log(err);
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))
+        })
     }
 }
