@@ -13,7 +13,7 @@ const CARD = '카드';
 
 const card = {
     read: async (cardIdx) => {
-        const query = `SELECT * FROM ${table} WHERE cardIdx = ${cardIdx}`;
+        const query = `SELECT * FROM ${TABLE} WHERE cardIdx = ${cardIdx}`;
         const values = [cardIdx];
         const result = await pool.queryParam_Parse(query, values);
         if(result.length == 0) throw new NotFoundError(CARD);
@@ -21,11 +21,11 @@ const card = {
         return card;
     },
     readAll: async () => {
-        const query = `SELECT * FROM ${table}`;
+        const query = `SELECT * FROM ${TABLE}`;
         const result = await pool.queryParam_None(query);
         if(result.length == 0) throw new NotFoundError(CARD);
         const cardArr = [];
-        result.forEach((rawCard, index, cardError) => 
+        result.forEach((rawCard, index, result) => 
             cardArr.push(cardData(rawCard)));
         return cardArr;
     },
