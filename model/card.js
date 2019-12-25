@@ -29,10 +29,13 @@ const card = {
             cardArr.push(cardData(rawCard)));
         return cardArr;
     },
-    count: {
-        //TODO: 카드 상세 조회
-    }
-    ,
+    count: async (cardIdx) => {
+        const query = `UPDATE card SET count = count + 1 WHERE cardIdx = ${cardIdx}`;
+        const values = [cardIdx];
+        const result = await pool.queryParam_Parse(query, values);
+        // if(result.length == 0) throw new NotFoundError(CARD);
+        if(result.affectedRows == 0) throw new NotFoundError();
+    },
     create: async(
         title,
         content,
