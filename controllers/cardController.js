@@ -7,24 +7,36 @@ module.exports = {
         Card.readAll()
         .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result)))
+            .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result))
+        )
         .catch(err =>
             res.status(err.status || 500)
-            .send(util.successFalse(err.message)))
+            .send(util.successFalse(err.message))
+        )
     },
     read: async (req, res) => {
         const cardIdx = req.params.cardIdx
-        console.log(cardIdx)
         Card.read(cardIdx)
         .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(message.CARD_READ_SUCCESS, result)))
+            .send(util.successTrue(message.CARD_READ_SUCCESS, result))
+        )
         .catch(err =>
             res.status(err.status || 500)
-            .send(util.successFalse(err.message)))
+            .send(util.successFalse(err.message))
+        )
     },
-    count: async(req, res) => {
-        //TODO: 카드 실행 횟수 올리기
+    count: async (req, res) => {
+        const cardIdx = req.params.cardIdx
+        Card.count(cardIdx)
+        .then(result => 
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_COUNT_SUCCESS, result))
+        )
+        .catch(err => 
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))
+        )
     },
     create: async(req, res) => {
         //TODO: 카드 생성
@@ -39,6 +51,5 @@ module.exports = {
     }
     ,
     delete: async(req, res) => {
-        //TODO: 카드 상세 삭제
     }
 }
