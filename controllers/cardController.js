@@ -1,13 +1,13 @@
 const Card = require('../model/card');
 const {util, status, message} = require('../modules/utils');
-const NAME = '카드';
+const CARD = '카드';
 
 module.exports = {
     readAll: async (req, res) => {
         Card.readAll()
         .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(message.CARD_READ_SUCCESS(CARD), result)))
+            .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
@@ -18,7 +18,7 @@ module.exports = {
         Card.read(cardIdx)
         .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(message.CARD_READ_SUCCESS(CARD), result)))
+            .send(util.successTrue(message.CARD_READ_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
