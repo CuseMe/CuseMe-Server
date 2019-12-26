@@ -11,6 +11,7 @@ module.exports = {
     //jwt의 sign
     start: async(req, res) => {
         //const id = req.body
+        console.log("@id@",req.body.id)
         User.start(req.body.id)
         .then(result =>
             res.status(status.OK)
@@ -39,9 +40,24 @@ module.exports = {
         User.updatePwd(req.body, req.headers.token) 
         .then(() =>
             res.status(status.OK)
-            .send(util.successTrue(message.X_UPDATE_SUCCESS(NAME))))
+            .send(util.successTrue(message.PWD_UPDATE_SUCCESS))
         .catch(err => 
+            console.log(err);
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
+    },
+
+    updatePhone: async(req, res) => {
+        User.updatePhone(req.body, req.headers.token)
+        .then(() => 
+            res.status(status.OK)
+            .send(util.successTrue(message.PHONE_NUM_UPDATE_SUCCESS))
+        )
+        .catch(err => {
+            console.log(err);
+            res.status(err.status || 500)
+                .send(util.successFalse(err.message))
+        })
     }
+    
 }

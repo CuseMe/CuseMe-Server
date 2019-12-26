@@ -9,7 +9,7 @@ class TokenExpiredError extends Error {
         }
         this.code = code;
         this.status = status;
-        this.message = responseMessage.UNAUTHORIZED;
+        this.message = responseMessage.EXPIRED_TOKEN;
     }
 }
 

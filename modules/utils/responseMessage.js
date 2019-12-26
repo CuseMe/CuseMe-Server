@@ -5,6 +5,7 @@ module.exports = {
     INTERNAL_SERVER_ERROR: "서버 내부 오류",
 
     USER_START_SUCCESS: "앱 시작 성공",
+    PWD_UPDATE_SUCESS: "유저 업데이트 성공",
 
     SIGN_IN_SUCCESS: "로그인 성공",
     SIGN_IN_FAIL: "로그인 실패",
@@ -13,6 +14,8 @@ module.exports = {
     EXPIRED_TOKEN: "만료된 토큰입니다",
     INVALID_TOKEN: "유효하지 않은 토큰입니다",
     EMPTY_TOKEN: "토큰이 없습니다",
+
+    PHONE_NUM_UPDATE_SUCCESS: "전화번호 변경 성공",
 
     CARD_CREATE_SUCCESS: "카드 작성 성공",
     CARD_CREATE_FAIL: "카드 작성 실패",

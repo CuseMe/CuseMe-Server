@@ -1,4 +1,4 @@
-const pool = require('../modules/db/pool');
+const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
 
@@ -8,52 +8,63 @@ const {
     NotCreatedError,
     NotDeletedError,
     NotFoundError,
+    NotUpdatedError
 } = require('../errors');
 
 const TABLE = 'card';
-const CARD = '카드';
 
 const card = {
     read: async (cardIdx) => {
         const query = `SELECT * FROM ${TABLE} WHERE cardIdx = ${cardIdx}`;
         const values = [cardIdx];
         const result = await pool.queryParam_Parse(query, values);
-        if(result.length == 0) throw new NotFoundError(CARD);
+        if(result.length == 0) throw new NotFoundError;
         const card = cardData(result[0]);
         return card;
     },
     readAll: async () => {
         const query = `SELECT * FROM ${TABLE}`;
         const result = await pool.queryParam_None(query);
-        if(result.length == 0) throw new NotFoundError(CARD);
+        if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
     count: async (cardIdx) => {
         const query = `UPDATE ${TABLE} SET count = count + 1 WHERE cardIdx = ${cardIdx}`;
         const values = [cardIdx];
         const result = await pool.queryParam_Parse(query, values);
-        if(result.affectedRows == 0) throw new NotFoundError(CARD);
+        if(result.affectedRows == 0) throw new NotFoundError;
     },
     create: async (
-        image,
-        record,
+        {image,
+        record},
         {title,
         content,
         visible,
-        userIdx}) => {
-            console.log('title',title)
-            if(!title || !content || !visible || !userIdx) throw new ParameterError
+        uuid,
+        sequence}) => {
+            if(!image || !title || !content || !visible || !uuid || !sequence) throw new ParameterError
             const serialNum = Math.random().toString(36).substring(3);
-            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, userIdx) VALUES(?, ?, ?, ?, ?, ?, ?)`
-            const values = [title, content, image.location, record.location, visible, serialNum, userIdx]
+            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
+            const values = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence]
             const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotCreatedError(CARD)
-    }
-    ,
-    update: {
-        //TODO: 카드 상세 수정
+            if(result.affectedRows == 0) throw new NotCreatedError
     },
-    updateAll: {
+    update: async (
+        {image,
+        record},
+        {title,
+        content,
+        visible,
+        uuid},
+        cardIdx) => {
+            if(!image || !title || !content || !visible || !uuid ) throw new ParameterError
+            const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE uuid = ? AND cardIdx = ?`;
+            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx]
+            console.log('values',values)
+            const result = await pool.queryParam_Parse(query, values);
+            if(result.affectedRows == 0) throw new NotUpdatedError
+    },
+    updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정
     },
     delete: async ({cardIdx}, token) => {

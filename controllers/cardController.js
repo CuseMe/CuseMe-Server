@@ -55,16 +55,24 @@ module.exports = {
             .send(util.successFalse(err.message)))
     },
     create: async(req, res) => {
-        console.log('req.body',req.body)
-        Card.create(req.image, req.record, req.body)
+        Card.create(req.files, req.body)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_CREATE_SUCCESS)))
         .catch(err => 
             res.status(err.status || 500)
+            .send(util.successFalse(err.message)))
+    },
+    update: async(req, res) => {
+        Card.update(req.files, req.body, req.params.cardIdx)
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
+        .catch(err => 
+            res.status(err.status || 500)
             .send(util.successFalse(err.message)))}
     ,
-    updateAll: async (req, res) => {
+    updateAll: async(req, res) => {
         //TODO: 카드 배열 및 전체 수정
     },
     delete: async (req, res) => {

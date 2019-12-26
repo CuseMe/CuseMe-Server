@@ -1,5 +1,5 @@
-const poolPromise = require('../../config/dbConfig');
-const { DatabaseError, NoReferencedRowError, DuplicatedEntryError } = require('../../errors');
+const poolPromise = require('../../../config/dbConfig');
+const { DatabaseError, NoReferencedRowError, DuplicatedEntryError } = require('../../../errors');
 
 module.exports = {
     queryParam_None: async (query) => {
