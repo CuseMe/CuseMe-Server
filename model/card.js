@@ -1,6 +1,7 @@
 const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
+
 const { 
     AuthorizationError, 
     ParameterError,
@@ -9,6 +10,7 @@ const {
     NotFoundError,
     NotUpdatedError
 } = require('../errors');
+
 const TABLE = 'card';
 
 const card = {

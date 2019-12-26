@@ -5,6 +5,8 @@ const authUtil = require('../modules/utils/authUtil');
 
 router.get('/start',AuthControllers.start);
 router.get('/signIn', AuthControllers.signIn);
+router.put('/',AuthControllers.updatePwd)
 router.put('/phone', AuthControllers.updatePhone);
+
 
 module.exports = router;
