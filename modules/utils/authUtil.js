@@ -8,15 +8,12 @@ const authUtil = {
 
     LoggedIn: async(req, res, next) =>{
         const {token} = req.headers;
-
         //1. 토큰 존재하는지 확인
         if(!token){
             return res.status(statusCode.BAD_REQUEST).send(util.successFalse(responseMessage.EMPTY_TOKEN));
         }
-
         //2. 토큰 유효한지 확인
         const result = jwt.verify(token);
-
         if(result == -3){
             res.status(statusCode.UNAUTHORIZED)
             .send(util.successFalse(responseMessage.EXPIRED_TOKEN));
@@ -27,7 +24,6 @@ const authUtil = {
             .send(util.successFalse(responseMessage.INVALID_TOKEN));
             return;
         }
-
         console.log(result);
         const userIdx = result.idx;
         if(!userIdx){
@@ -35,7 +31,6 @@ const authUtil = {
             .send(util.successFalse(responseMessage.NULL_VALUE));
             return;
         }
-
         req.decoded = userIdx;
         next();
     }
