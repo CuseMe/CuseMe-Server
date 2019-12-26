@@ -14,6 +14,8 @@ module.exports = {
     INVALID_TOKEN: "유효하지 않은 토큰입니다",
     EMPTY_TOKEN: "토큰이 없습니다",
 
+    PHONE_NUM_UPDATE_SUCCESS: "전화번호 변경 성공",
+
     CARD_CREATE_SUCCESS: "카드 작성 성공",
     CARD_CREATE_FAIL: "카드 작성 실패",
     CARD_READ_ALL_SUCCESS: "카드 전체 조회 성공",
