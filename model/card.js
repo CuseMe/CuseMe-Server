@@ -30,19 +30,25 @@ const card = {
         return cardArr;
     },
     count: async (cardIdx) => {
-        const query = `UPDATE card SET count = count + 1 WHERE cardIdx = ${cardIdx}`;
+        const query = `UPDATE ${TABLE} SET count = count + 1 WHERE cardIdx = ${cardIdx}`;
         const values = [cardIdx];
         const result = await pool.queryParam_Parse(query, values);
-        // if(result.length == 0) throw new NotFoundError(CARD);
-        if(result.affectedRows == 0) throw new NotFoundError();
+        if(result.affectedRows == 0) throw new NotFoundError(CARD);
     },
-    create: async(
-        title,
-        content,
+    create: async (
+        image,
         record,
-        visible
-    ) => {
-        //TODO: 카드 생성
+        {title,
+        content,
+        visible,
+        userIdx}) => {
+            console.log('title',title)
+            if(!title || !content || !visible || !userIdx) throw new ParameterError
+            const serialNum = Math.random().toString(36).substring(3);
+            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, userIdx) VALUES(?, ?, ?, ?, ?, ?, ?)`
+            const values = [title, content, image.location, record.location, visible, serialNum, userIdx]
+            const result = await pool.queryParam_Parse(query, values);
+            if(result.affectedRows == 0) throw new NotCreatedError(CARD)
     }
     ,
     update: {
