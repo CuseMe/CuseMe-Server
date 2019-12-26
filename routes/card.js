@@ -14,4 +14,4 @@ router.delete('/',CardController.delete);
 
 console.log('baseUri/cards');
 
-module.exports = router
+module.exports = router;
