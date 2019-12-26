@@ -24,6 +24,7 @@ module.exports = {
     CARD_READ_FAIL: "카드 조회 성공",
     CARD_UPDATE_SUCCESS: "카드 수정 성공",
     CARD_UPDATE_FAIL: "카드 수정 실패",
+    CARD_DOWNLOAD_SUCCESS: "카드 다운로드 성공",
     CARD_DELETE_SUCCESS: "카드 삭제 성공",
     CARD_DELETE_FAIL: "카드 삭제 실패",
     CARD_COUNT_SUCCESS: "카드 클릭 횟수 증가 성공",
