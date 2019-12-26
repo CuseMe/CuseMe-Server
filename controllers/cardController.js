@@ -39,8 +39,14 @@ module.exports = {
         )
     },
     create: async(req, res) => {
-        //TODO: 카드 생성
-    }
+        console.log('req.body',req.body)
+        Card.create(req.image, req.record, req.body)
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_CREATE_SUCCESS)))
+        .catch(err => 
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)))}
     ,
     update: async(req, res) => {
         //TODO: 카드 상세 수정
