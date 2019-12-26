@@ -54,23 +54,18 @@ module.exports = {
         const getValues = [uuid];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new error.AuthorizationError(NAME);
-        
-        const salt = getResult[0].salt;
-       // const hashedpassword = getResult[0].password;
-        let decoded = jwt.verify(password, salt); //0000
-        console.log(decoded)
-
+        const user = getResult[0]
+        const salt = user.salt
         const hashedPassword = await encryptionManager.encryption(password, salt);
-        if(getResult[0].password != hashedPassword) throw new error.MissPasswordError;
+        if(user.password != hashedPassword) throw new error.MissPasswordError;
         const putQuery = `UPDATE ${TABLE} SET password = ?,salt = ? WHERE uuid = ?`;
         const newsalt = await encryptionManager.makeRandomByte();
         const hashednewpassword = await encryptionManager.encryption(newpassword, newsalt);
         const putValues = [hashednewpassword, newsalt, uuid];
         const putResult = await db.queryParam_Parse(putQuery, putValues);
         if(putResult.affectedRows == 0) throw new error.NotUpdatedError(NAME);
+        return putResult;
     },
-
-    // })
 
     //사용자 전화번호 변경
     updatePhone: async ({phoneNum}, token) => {

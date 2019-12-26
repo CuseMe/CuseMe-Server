@@ -5,7 +5,7 @@ module.exports = {
     INTERNAL_SERVER_ERROR: "서버 내부 오류",
 
     USER_START_SUCCESS: "앱 시작 성공",
-    PWD_UPDATE_SUCESS: "유저 업데이트 성공",
+    PWD_UPDATE_SUCCESS: "유저 업데이트 성공",
 
     SIGN_IN_SUCCESS: "로그인 성공",
     SIGN_IN_FAIL: "로그인 실패",
