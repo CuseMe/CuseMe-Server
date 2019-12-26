@@ -1,11 +1,11 @@
 const statusCode = require('../modules/utils/statusCode');
 const responseMessage = require('../modules/utils/responseMessage');
 
-class AuthorizationError extends Error {
+class NoUserError extends Error {
     constructor(code = 'GENERIC', status = statusCode.UNAUTHORIZED, ...params) {
         super(...params);
         if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, AuthorizationError);
+            Error.captureStackTrace(this, NoUserError);
         }
         this.code = code;
         this.status = status;
@@ -13,4 +13,4 @@ class AuthorizationError extends Error {
     }
 }
 
-module.exports = AuthorizationError;
+module.exports = NoUserError;

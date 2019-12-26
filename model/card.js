@@ -75,12 +75,13 @@ const card = {
         visible,
         uuid},
         cardIdx) => {
-            if(!image || !title || !content || !visible || !uuid ) throw new ParameterError;
+            if(!image || !title || !content || !visible || !uuid ) throw new ParameterError
             const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE uuid = ? AND cardIdx = ?`;
-            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx];
+            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx]
             console.log('values',values)
             const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotUpdatedError;
+            if(result.affectedRows == 0) throw new NotUpdatedError
+
     },
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정

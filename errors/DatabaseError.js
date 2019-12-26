@@ -9,7 +9,7 @@ class DatabaseError extends Error {
         }
         this.code = code;
         this.status = status;
-        this.message = responseMessage.DB_ERROR;
+        this.message = responseMessage.INTERNAL_SERVER_ERROR;
     }
 }
 

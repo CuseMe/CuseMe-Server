@@ -8,9 +8,7 @@ router.get('/',CardController.readAll)
 router.get('/:cardIdx',CardController.read);
 router.put('/:cardIdx/count',CardController.count);
 router.post('/',cpUpload, CardController.create);
-
 router.post('/:serialNum', cpUpload, CardController.download);
-
 router.put('/:cardIdx',cpUpload, CardController.update);
 router.put('/',CardController.update);
 router.delete('/',CardController.delete);
