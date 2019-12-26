@@ -26,7 +26,7 @@ module.exports = {
     },
     signIn: async (id) => {
         if(!id) throw new ParameterError
-        const getQuery = `SELECT * FROM ${TABLE} WHERE userId = ?`;
+        const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
         const getValues = [id];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new NotFoundError(NAME);
