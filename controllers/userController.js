@@ -22,9 +22,19 @@ module.exports = {
                 .send(util.successFalse(err.message))
         })
     },
-    logIn: async(req, res) => { //signIn->logIn으로 이름 바꿈
+    signIn: async(req, res) => { //signIn->logIn으로 이름 바꿈
         //TODO: 사용자 앱 진입시 토큰 넘겨 주기
         //jwt의 verify
+        User.signIn(req.body.id)
+        .then(result => 
+            res.status(status.OK)
+            .send(util.successTrue(message.SIGN_IN_SUCCESS, result))
+        )
+        .catch(err => {
+            console.log(err);
+            res.status(err.status || 500)
+                .send(util.successFalse(err.message))
+        })
     },
     // update: async(req, res) => {
         //TODO: 사용자 비밀번호 수정
