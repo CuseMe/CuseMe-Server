@@ -46,6 +46,7 @@ module.exports = {
             })
     },
     update: async (req, res) => {
+        Card.update(req, res)
         .then(result => 
             res.status(status.OK)
             .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
