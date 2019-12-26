@@ -1,8 +1,8 @@
 // authUtil.js
-const jwt = require('../jwt');
+const jwt = require('../security/jwt');
 const responseMessage = require('./responseMessage');
 const statusCode = require('./statusCode');
-const util = require('./utils');
+const util = require('./util');
 
 const authUtil = {
 

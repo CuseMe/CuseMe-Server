@@ -5,6 +5,7 @@ module.exports =
         "uuid": rawUserData.uuid,
         "password": rawUserData.password,
         "salt": rawUserData.salt,
+        "phoneNum": rawUserData.phoneNum
     }
     return userData;
 }
