@@ -4,7 +4,12 @@ const { util, status, message} = require('../modules/utils');
 const NAME = '사용자'; 
 
 module.exports = {
-    signIn: async(req, res) => {
-        //TODO: 사용자 앱 진입시 토큰 넘겨 주기
-    }
+    signIn: async(req, res) => 
+        User.signIn(req.body)
+        .then((token) =>
+            res.status(status.OK)
+            .send(util.successTrue(message.SIGN_IN_SUCCESS, token)))
+        .catch(err => 
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)))
 }
