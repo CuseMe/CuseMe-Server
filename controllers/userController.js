@@ -22,7 +22,7 @@ module.exports = {
                 .send(util.successFalse(err.message))
         })
     },
-    logIn: async(req, res) => { //signIn->logIn으로 이름 바꿈
+    signIn: async(req, res) => { //signIn->logIn으로 이름 바꿈
         //TODO: 사용자 앱 진입시 토큰 넘겨 주기
         //jwt의 verify
     },
