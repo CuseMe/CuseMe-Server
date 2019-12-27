@@ -5,7 +5,6 @@ const statusCode = require('./statusCode');
 const util = require('./util');
 
 const authUtil = {
-
     LoggedIn: async(req, res, next) =>{
         const {token} = req.headers;
         //1. 토큰 존재하는지 확인
@@ -34,6 +33,5 @@ const authUtil = {
         req.decoded = userIdx;
         next();
     }
-
 }
 module.exports = authUtil;

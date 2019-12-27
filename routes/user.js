@@ -8,5 +8,4 @@ router.get('/signIn', AuthControllers.signIn);
 router.put('/',AuthControllers.updatePwd)
 router.put('/phone', AuthControllers.updatePhone);
 
-
 module.exports = router;
