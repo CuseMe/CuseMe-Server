@@ -54,12 +54,9 @@ module.exports = {
         const getValues = [uuid];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new error.AuthorizationError(NAME);
-        
+        console.log('getresult',getResult)
         const salt = getResult[0].salt;
-       // const hashedpassword = getResult[0].password;
-        let decoded = jwt.verify(password, salt); //0000
-        console.log(decoded)
-
+        //password hashing
         const hashedPassword = await encryptionManager.encryption(password, salt);
         if(getResult[0].password != hashedPassword) throw new error.MissPasswordError;
         const putQuery = `UPDATE ${TABLE} SET password = ?,salt = ? WHERE uuid = ?`;

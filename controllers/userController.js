@@ -41,10 +41,12 @@ module.exports = {
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.PWD_UPDATE_SUCCESS))
-        .catch(err => 
-            console.log(err);
-            res.status(err.status || 500)
-            .send(util.successFalse(err.message)))
+            )
+            .catch(err => {
+                console.log(err);
+                res.status(err.status || 500)
+                    .send(util.successFalse(err.message))
+            })
     },
 
     updatePhone: async(req, res) => {
