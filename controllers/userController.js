@@ -11,7 +11,7 @@ const authUtil = require('../modules/utils/authUtil');
 
 module.exports = {
     start: async (req, res) => {
-        User.start(req.body.id)
+        User.start(req.body.uuid)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.USER_START_SUCCESS, result)))
@@ -20,7 +20,7 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     signIn: async (req, res) => {
-        User.signIn(req.body.id)
+        User.signIn(req.body.uuid)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.SIGN_IN_SUCCESS, result)))
@@ -29,6 +29,7 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     updatePwd: async (req, res) => {
+        console.log("req.body.password",req.body);
         User.updatePwd(req.body, req.headers.token)
         .then(() =>
             res.status(status.OK)
