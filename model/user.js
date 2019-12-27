@@ -8,30 +8,31 @@ const db = require('../modules/security/db/pool');
 //const {ParameterError} = require('../errors');
 const error = require('../errors');
 
-const {LoggedIn} = require('../modules/utils/authUtil');
-
 const TABLE = 'user';
 const NAME = "사용자";
-
 
 module.exports = {
     start: async(id) => {
         if(!id) throw new error.ParameterError;
-        const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
+        const getQuery = `SELECT * FROM card WHERE uuid = ?`;
         const getValues = [id];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         //console.log('getResult@@@',getResult)
         //if(getResult.length == 0) throw new NotFoundError(NAME);
-        if(getResult.length == 0){
+        if(getResult.length == 0){ 
             const salt = await encryptionManager.makeRandomByte();
-            const hashedPassword = encryptionManager.encryption('0000', salt);
-            const insertQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, 0)`;
-            const insertValues = [id, hashedPassword, salt];
-            const insertResult = await db.queryParam_Parse(insertQuery, insertValues);
-            if(insertResult.affectedRows == 0) throw new error.NotUpdatedError(NAME);
-            return insertResult;
+            const hashedPassword = encryptionManager.encryption('0000', salt); 
+            const postQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, 0)`; 
+            const postValues = [id, hashedPassword, salt];
+            const postResult = await db.queryParam_Parse(postQuery, postValues);
+            const postCardValues = [{title:"text"},{content:"text"},{image:"text"},{record:"text"},{count: 1},{visible: 1},{serialNum:"text"},{sequence: 0},{uuid: 00000}];
+            for (var i=0; i<4; i++) {
+                const postCardQuery = `INSERT INTO CARD(title, content, image, record, count, visible, serialNum, sequence,  uuid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ${getValues})`;
+                const postCardValue= [postCardValues[i].title, postCardValues[i].content, postCardValues[i].image, postCardValues[i].record, postCardValues[i].count, postCardValues[i].visible, postCardValues[i].serialNum, postCardValues[i].sequence]; 
+            }
+            const cardResult = await db.queryParam_Parse(postCardQuery,postCardValues);
+            if(postResult.affectedRows == 0) throw new error.NotUpdatedError(NAME);
         }
-        return getResult;
     },
     signIn: async (id) => {
         if(!id) throw new error.ParameterError
@@ -46,7 +47,7 @@ module.exports = {
     //사용자 비밀번호 수정
     updatePwd : async ({
         password,
-        newpassword
+        newPassword
     }, token) => {
         if(!password) throw new error.ParameterError;
         const uuid = jwtExt.verify(token).data.id;
@@ -59,9 +60,9 @@ module.exports = {
         const hashedPassword = await encryptionManager.encryption(password, salt);
         if(user.password != hashedPassword) throw new error.MissPasswordError;
         const putQuery = `UPDATE ${TABLE} SET password = ?,salt = ? WHERE uuid = ?`;
-        const newsalt = await encryptionManager.makeRandomByte();
-        const hashednewpassword = await encryptionManager.encryption(newpassword, newsalt);
-        const putValues = [hashednewpassword, newsalt, uuid];
+        const newSalt = await encryptionManager.makeRandomByte();
+        const hashedNewPassword = await encryptionManager.encryption(newPassword, newSalt);
+        const putValues = [hashedNewPassword, newSalt, uuid];
         const putResult = await db.queryParam_Parse(putQuery, putValues);
         if(putResult.affectedRows == 0) throw new error.NotUpdatedError(NAME);
         return putResult;
