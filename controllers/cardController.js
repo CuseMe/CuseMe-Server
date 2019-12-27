@@ -46,7 +46,7 @@ module.exports = {
             })
     },
     update: async (req, res) => {
-        Card.update(req, res)
+        Card.update(res,req)
         .then(result => 
             res.status(status.OK)
             .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
@@ -63,15 +63,24 @@ module.exports = {
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
     },
-    update: async(req, res) => {
+    download: async(req, res) => {
+        Card.download(req.files, req.body, req.params.serialNum)
+            .then(() =>
+                res.status(status.OK)
+                .send(util.successTrue(message.CARD_DOWNLOAD_SUCCESS)))
+            .catch(err =>
+                res.status(err.status || 500)
+                .send(util.successFalse(err.message)))
+    },
+    update: async (req, res) => {
         Card.update(req.files, req.body, req.params.cardIdx)
-        .then(() =>
-            res.status(status.OK)
-            .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
-        .catch(err => 
-            res.status(err.status || 500)
-            .send(util.successFalse(err.message)))}
-    ,
+            .then(() =>
+                res.status(status.OK)
+                .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
+            .catch(err =>
+                res.status(err.status || 500)
+                .send(util.successFalse(err.message)))
+    },
     updateAll: async(req, res) => {
         //TODO: 카드 배열 및 전체 수정
     },
@@ -84,4 +93,5 @@ module.exports = {
             console.log(err);
             res.status(err.status || 500)
             .send(util.successFalse(err.message))})}
+
 }

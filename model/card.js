@@ -1,6 +1,7 @@
-const pool = require('../modules/db/pool');
+const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
+
 const { 
     AuthorizationError, 
     ParameterError,
@@ -9,6 +10,7 @@ const {
     NotFoundError,
     NotUpdatedError
 } = require('../errors');
+
 const TABLE = 'card';
 
 const card = {
@@ -40,13 +42,33 @@ const card = {
         visible,
         uuid,
         sequence}) => {
-            if(!image || !title || !content || !visible || !uuid || !sequence) throw new ParameterError
+            if(!image || !title || !content || !visible || !uuid || !sequence) throw new ParameterError;
             const serialNum = Math.random().toString(36).substring(3);
-            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
-            const values = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence]
+            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+            const values = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence];
             const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotCreatedError
+            if(result.affectedRows == 0) throw new NotCreatedError;
     },
+    download: async (
+        {image,
+        record},
+        {title,
+        content,
+        visible,
+        uuid,
+        sequence},
+        serialNum) => {
+            if(!image || !title || !content || !visible || !uuid || !sequence || !serialNum) throw new ParameterError;
+            const query = `SELECT * from ${TABLE} WHERE serialNum = ?`;
+            const values = [serialNum];
+            const result = await pool.queryParam_Parse(query, values);
+            if(result.length == 0) throw new NotFoundError;
+            //console.log(result);
+            const postQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+            const postValues = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence];
+            const postResult = await pool.queryParam_Parse(postQuery, postValues);
+            if(postResult.affectedRows == 0) throw new NotCreatedError;
+        },
     update: async (
         {image,
         record},
@@ -61,12 +83,13 @@ const card = {
             console.log('values',values)
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError
+
     },
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정
     },
     delete: async ({cardIdx}, token) => {
-        const user = jwtExt.verify(token).data.userIdx
+        const user = jwtExt.verify(token).data.userIdx;
         const verifyQuery = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND userIdx = ?`;
         const verifyValues = [cardIdx, user];
         const verifyResult = await pool.queryParam_Parse(verifyQuery, verifyValues);
@@ -78,4 +101,4 @@ const card = {
     }
 }
 
-module.exports = card
+module.exports = card;
