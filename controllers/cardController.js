@@ -6,25 +6,19 @@ const {
 } = require('../modules/utils');
 const CARD = '카드';
 
-
 module.exports = {
     readAll: async (req, res) => {
         Card.readAll()
-            .then(result =>
-                res.status(status.OK)
-                .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result))
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(err.status || 500)
-                    .send(util.successFalse(err.message))
-            })
-
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))})
     },
     read: async (req, res) => {
         const cardIdx = req.params.cardIdx
         Card.read(cardIdx)
-
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_READ_SUCCESS, result)))
@@ -36,19 +30,16 @@ module.exports = {
     count: async (req, res) => {
         const cardIdx = req.params.cardIdx
         Card.count(cardIdx)
-            .then(result =>
-                res.status(status.OK)
-                .send(util.successTrue(message.CARD_COUNT_SUCCESS, result))
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(err.status || 500)
-                    .send(util.successFalse(err.message))
-            })
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))})
     },
     update: async (req, res) => {
         Card.update(res,req)
-        .then(result => 
+        .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
         .catch(err => 
@@ -60,27 +51,27 @@ module.exports = {
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_CREATE_SUCCESS)))
-        .catch(err => 
+        .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.message)))
     },
     download: async(req, res) => {
         Card.download(req.files, req.body, req.params.serialNum)
-            .then(() =>
-                res.status(status.OK)
-                .send(util.successTrue(message.CARD_DOWNLOAD_SUCCESS)))
-            .catch(err =>
-                res.status(err.status || 500)
-                .send(util.successFalse(err.message)))
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_DOWNLOAD_SUCCESS)))
+        .catch(err =>
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)))
     },
     update: async (req, res) => {
         Card.update(req.files, req.body, req.params.cardIdx)
-            .then(() =>
-                res.status(status.OK)
-                .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
-            .catch(err =>
-                res.status(err.status || 500)
-                .send(util.successFalse(err.message)))
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
+        .catch(err =>
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)))
     },
     updateAll: async(req, res) => {
         //TODO: 카드 배열 및 전체 수정
@@ -91,8 +82,6 @@ module.exports = {
             res.status(status.OK)
             .send(util.successTrue(message.CARD_DELETE_SUCCESS)))
         .catch(err =>  {
-            console.log(err);
             res.status(err.status || 500)
             .send(util.successFalse(err.message))})}
-
 }

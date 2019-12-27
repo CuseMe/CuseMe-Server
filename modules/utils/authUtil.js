@@ -1,39 +1,42 @@
-// authUtil.js
 const jwt = require('../security/jwt');
-const responseMessage = require('./responseMessage');
+const resMessage = require('./responseMessage');
 const statusCode = require('./statusCode');
 const util = require('./util');
 
 const authUtil = {
-
-    LoggedIn: async(req, res, next) =>{
-        const {token} = req.headers;
-        //1. 토큰 존재하는지 확인
+    successTrue: (message, data) => { 
+        return {
+            success: true,
+            message: message, 
+            data: data
+        } 
+    },
+    successFalse: (message) => { 
+        return {
+            success: false,
+            message: message 
+        }
+    }, 
+    LoggedIn: async(req, res, next) => {
+        console.log("미들 웨어");
+        var token = req.headers.token;
         if(!token){
-            return res.status(statusCode.BAD_REQUEST).send(util.successFalse(responseMessage.EMPTY_TOKEN));
+            return res.status(statusCode.BAD_REQUEST).
+            send(util.successFalse(resMessage.EMPTY_TOKEN))
         }
-        //2. 토큰 유효한지 확인
-        const result = jwt.verify(token);
-        if(result == -3){
-            res.status(statusCode.UNAUTHORIZED)
-            .send(util.successFalse(responseMessage.EXPIRED_TOKEN));
-            return;
-        }
-        if(result == -2){
-            res.status(statusCode.UNAUTHORIZED)
-            .send(util.successFalse(responseMessage.INVALID_TOKEN));
-            return;
-        }
+        const result = jwt.verify(token); 
         console.log(result);
-        const userIdx = result.idx;
-        if(!userIdx){
-            res.status(statusCode.BAD_REQUEST)
-            .send(util.successFalse(responseMessage.NULL_VALUE));
-            return;
+        if(result == -1) {
+            return res.status(statusCode.UNAUTHORIZED)
+            .send(util.successFalse(resMessage.EXPIRED_TOKEN)); 
         }
+        if(result == -2) {
+            return res.status(statusCode.UNAUTHORIZED)
+            .send(util.successFalse(resMessage.INVALID_TOKEN)); 
+        }
+        const userIdx = result.idx;
         req.decoded = userIdx;
         next();
     }
-
 }
 module.exports = authUtil;

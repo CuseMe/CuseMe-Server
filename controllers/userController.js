@@ -10,59 +10,41 @@ const jwt = require('../modules/security/jwt');
 const authUtil = require('../modules/utils/authUtil');
 
 module.exports = {
-    //start: async(req, res) => {}
-    //앱 시작 시 바디로 받은 uuid 가지고 토큰 생성
-    //jwt의 sign
     start: async (req, res) => {
-        //const id = req.body
-        console.log("@id@", req.body.id)
-        User.start(req.body.id)
-            .then(result =>
-                res.status(status.OK)
-                .send(util.successTrue(message.USER_START_SUCCESS, result))
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(err.status || 500)
-                    .send(util.successFalse(err.message))
-            })
+        User.start(req.body.uuid)
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.USER_START_SUCCESS, result)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))})
     },
     signIn: async (req, res) => {
-        User.signIn(req.body.id)
-            .then(result =>
-                res.status(status.OK)
-                .send(util.successTrue(message.SIGN_IN_SUCCESS, result))
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(err.status || 500)
-                    .send(util.successFalse(err.message))
-            })
+        User.signIn(req.body.uuid)
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.SIGN_IN_SUCCESS, result)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))})
     },
     updatePwd: async (req, res) => {
-        //TODO: 사용자 비밀번호 수정
+        console.log("req.body.password",req.body);
         User.updatePwd(req.body, req.headers.token)
-            .then(() =>
-                res.status(status.OK)
-                .send(util.successTrue(message.PWD_UPDATE_SUCCESS))
-                .catch(err => {
-                    console.log(err);
-                    res.status(err.status || 500)
-                        .send(util.successFalse(err.message))
-                }))
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.PWD_UPDATE_SUCCESS))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))}))
     },
-
     updatePhone: async (req, res) => {
         User.updatePhone(req.body, req.headers.token)
-            .then(() =>
-                res.status(status.OK)
-                .send(util.successTrue(message.PHONE_NUM_UPDATE_SUCCESS))
-            )
-            .catch(err => {
-                console.log(err);
-                res.status(err.status || 500)
-                    .send(util.successFalse(err.message))
-            })
+        .then(() =>
+            res.status(status.OK)
+            .send(util.successTrue(message.PHONE_NUM_UPDATE_SUCCESS)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message))})
     }
-
 }

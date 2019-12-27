@@ -1,7 +1,6 @@
 const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
-
 const { 
     AuthorizationError, 
     ParameterError,
@@ -10,7 +9,6 @@ const {
     NotFoundError,
     NotUpdatedError
 } = require('../errors');
-
 const TABLE = 'card';
 
 const card = {
@@ -59,16 +57,16 @@ const card = {
         sequence},
         serialNum) => {
             if(!image || !title || !content || !visible || !uuid || !sequence || !serialNum) throw new ParameterError;
-            const query = `SELECT * from ${TABLE} WHERE serialNum = ?`;
-            const values = [serialNum];
-            const result = await pool.queryParam_Parse(query, values);
-            if(result.length == 0) throw new NotFoundError;
+            const getQuery = `SELECT * from ${TABLE} WHERE serialNum = ?`;
+            const getValues = [serialNum];
+            const getResult = await pool.queryParam_Parse(getQuery, getValues);
+            if(getResult.length == 0) throw new NotFoundError;
             //console.log(result);
             const postQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
             const postValues = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
-        },
+    },
     update: async (
         {image,
         record},
@@ -83,20 +81,19 @@ const card = {
             console.log('values',values)
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError
-
     },
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정
     },
     delete: async ({cardIdx}, token) => {
         const user = jwtExt.verify(token).data.userIdx;
-        const verifyQuery = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND userIdx = ?`;
-        const verifyValues = [cardIdx, user];
-        const verifyResult = await pool.queryParam_Parse(verifyQuery, verifyValues);
-        if(verifyResult.length == 0) throw new AuthorizationError();
+        const getQuery = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND userIdx = ?`;
+        const getValues = [cardIdx, user];
+        const getResult = await pool.queryParam_Parse(getQuery, getValues);
+        if(getResult.length == 0) throw new AuthorizationError;
         const deleteQuery = `DELETE FROM ${TABLE} WHERE cardIdx = '${cardIdx}'`;
         const deleteResult = await pool.queryParam_None(deleteQuery);
-        if(deleteResult.affectedRows == 0) throw new NotDeletedError();
+        if(deleteResult.affectedRows == 0) throw new NotDeletedError;
         return deleteResult;
     }
 }
