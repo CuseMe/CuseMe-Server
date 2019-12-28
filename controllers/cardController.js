@@ -24,7 +24,8 @@ module.exports = {
             .send(util.successTrue(message.CARD_READ_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
-            .send(util.successFalse(err.message)))
+            .send(util.successFalse(err.message)
+            ))
     },
     readVisible: (req, res) => {
         Card.readVisible(req.body.uuid)
