@@ -36,9 +36,10 @@ module.exports = {
         if (findUserResult.length == 0 || !findUserResult) throw new error.NoUserError;
         const user = findUserResult[0];
         const salt = user.salt;
+        const userIdx = user.userIdx;
         const hashedPassword = await encryptionManager.encryption(password, salt);
         if(user.password != hashedPassword) throw new error.MissPasswordError;
-        const jwtToken = jwtExt.publish({uuid});
+        const jwtToken = jwtExt.publish({userIdx, uuid});
         return {token :jwtToken.token};
     },
     //사용자 비밀번호 수정
