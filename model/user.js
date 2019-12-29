@@ -8,7 +8,7 @@ const TABLE = 'user';
 
 module.exports = {
     start: async(uuid) => {
-        const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
+        const findUserQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
         const findUserValues = [uuid];
         const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
         const phoneNum = '000000000000'
@@ -28,12 +28,16 @@ module.exports = {
             }
         }
     },
-    signIn: async (uuid) => {
-        if(!uuid) throw new error.ParameterError
-        const query = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
-        const values = [uuid];
-        const result = await db.queryParam_Parse(query, values);
-        if(result.length == 0) throw new error.NoUserError;
+    signIn: async (uuid, password) => {
+        if(!uuid || !password) throw new error.ParameterError;
+        const findUserQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
+        const findUserValues = [uuid];
+        const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
+        if (findUserResult.length == 0 || !findUserResult) throw new error.NoUserError;
+        const user = findUserResult[0];
+        const salt = user.salt;
+        const hashedPassword = await encryptionManager.encryption(password, salt);
+        if(user.password != hashedPassword) throw new error.MissPasswordError;
         const jwtToken = jwtExt.publish({uuid});
         return {token :jwtToken.token};
     },
