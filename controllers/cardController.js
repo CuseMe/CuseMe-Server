@@ -56,7 +56,8 @@ module.exports = {
             .send(util.successFalse(err.message)))
     },
     download: async(req, res) => {
-        Card.download(req.files, req.body, req.params.serialNum)
+        const serialNum = req.params.serialNum;
+        Card.download(req.headers.token, serialNum)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_DOWNLOAD_SUCCESS)))
