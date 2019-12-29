@@ -57,11 +57,18 @@ const card = {
             if(!image || !title || !content || !visible || !sequence) throw new ParameterError
             //랜덤 시리얼 번호가 같을 때 재설정이 필요
             const serialNum = Math.random().toString(36).substring(3);
-            const uuid = jwtExt.verify(token).data.uuid;
-            const query = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
-            const values = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence];
-            const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotCreatedError;
+            const userIdx = jwtExt.verify(token).data.userIdx;
+            const cardCreateQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, sequence) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+            const cardCreateValues = [title, content, image[0].location, record[0].location, visible, serialNum, sequence];
+            const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+            if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            const cardIdx = cardCreateResult.insertId
+            console.log('test '+cardIdx)
+            const postQuery = `INSERT INTO own(cardIdx, userIdx) VALUES(?, ?)`;
+            const postValues = [cardIdx, userIdx];
+            const postResult = await pool.queryParam_Parse(postQuery, postValues);
+            console.log(2)
+            if(postResult.affectedRows == 0) throw new NotCreatedError; 
     },
     download: async (
         token,
@@ -97,13 +104,14 @@ const card = {
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정
     },
-    delete: async ({cardIdx}, token) => {
-        const uuid = jwtExt.verify(token).data.uuid;
-        const getQuery = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND uuid = ?`;
-        const getValues = [cardIdx, uuid];
+    delete: async (cardIdx, token) => {
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        console.log(cardIdx)
+        const getQuery = `SELECT * FROM own WHERE cardIdx = ? AND userIdx = ?`;
+        const getValues = [cardIdx, userIdx];
         const getResult = await pool.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new NotFoundError;
-        const deleteQuery = `DELETE FROM ${TABLE} WHERE cardIdx = '${cardIdx}'`;
+        const deleteQuery = `DELETE FROM own WHERE cardIdx = '${cardIdx}' AND userIdx = ${userIdx}`;
         const deleteResult = await pool.queryParam_None(deleteQuery);
         if(deleteResult.affectedRows == 0) throw new NotDeletedError;
         return deleteResult;
