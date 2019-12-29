@@ -61,7 +61,6 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
-            //console.log(result);
             const postQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
             const postValues = [title, content, image[0].location, record[0].location, visible, serialNum, uuid, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
@@ -75,12 +74,11 @@ const card = {
         visible,
         uuid},
         cardIdx) => {
-            if(!image || !title || !content || !visible || !uuid ) throw new ParameterError
+            if(!image || !title || !content || !visible || !uuid ) throw new ParameterError;
             const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE uuid = ? AND cardIdx = ?`;
-            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx]
-            console.log('values',values)
+            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx];
             const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotUpdatedError
+            if(result.affectedRows == 0) throw new NotUpdatedError;
     },
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정

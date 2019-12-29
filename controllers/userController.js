@@ -29,7 +29,6 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     updatePwd: async (req, res) => {
-        console.log("req.body.password",req.body);
         User.updatePwd(req.body, req.headers.token)
         .then(() =>
             res.status(status.OK)

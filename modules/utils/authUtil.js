@@ -18,14 +18,12 @@ const authUtil = {
         }
     }, 
     LoggedIn: async(req, res, next) => {
-        console.log("미들 웨어");
         var token = req.headers.token;
         if(!token){
             return res.status(statusCode.BAD_REQUEST).
             send(util.successFalse(resMessage.EMPTY_TOKEN))
         }
-        const result = jwt.verify(token); 
-        console.log(result);
+        const result = jwt.verify(token);
         if(result == -1) {
             return res.status(statusCode.UNAUTHORIZED)
             .send(util.successFalse(resMessage.EXPIRED_TOKEN)); 
