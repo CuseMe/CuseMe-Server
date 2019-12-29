@@ -25,7 +25,7 @@ module.exports = {
     CARD_READ_VISIBLE_FAIL: "장애인용 카드 전체 조회 실패",
     CARD_READ_VISIBLE_SUCCESS: "장애인용 카드 전체 조회 성공",
     CARD_READ_SUCCESS: "카드 조회 성공",
-    CARD_READ_FAIL: "카드 조회 성공",
+    CARD_READ_FAIL: "카드 조회 실패",
     CARD_UPDATE_SUCCESS: "카드 수정 성공",
     CARD_UPDATE_FAIL: "카드 수정 실패",
     CARD_DOWNLOAD_SUCCESS: "카드 다운로드 성공",
