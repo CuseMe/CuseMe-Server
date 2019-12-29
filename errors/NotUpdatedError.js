@@ -9,7 +9,7 @@ class NotUpdatedError extends Error {
         }
         this.code = code;
         this.status = status;
-        this.message = responseMessage.USER_UPDATE_FAIL;
+        this.message = responseMessage.CARD_UPDATE_FAIL;
     }
 }
 

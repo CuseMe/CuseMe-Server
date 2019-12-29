@@ -5,7 +5,9 @@ const {
     status,
     message
 } = require('../modules/utils');
+const NAME = '사용자';
 const jwt = require('../modules/security/jwt');
+const authUtil = require('../modules/utils/authUtil');
 
 module.exports = {
     start: async (req, res) => {
@@ -18,7 +20,7 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     signIn: async (req, res) => {
-        User.signIn(req.body.uuid, req.body.password)
+        User.signIn(req.body.uuid)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.SIGN_IN_SUCCESS, result)))
@@ -34,7 +36,7 @@ module.exports = {
         .catch(err => {
             res.status(err.status || 500)
             .send(util.successFalse(err.message))})
-        },
+    },
     updatePhone: async (req, res) => {
         User.updatePhone(req.body, req.headers.token)
         .then(() =>
