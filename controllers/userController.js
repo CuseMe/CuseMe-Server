@@ -5,9 +5,7 @@ const {
     status,
     message
 } = require('../modules/utils');
-//const NAME = '사용자';
 const jwt = require('../modules/security/jwt');
-//const authUtil = require('../modules/utils/authUtil');
 
 module.exports = {
     start: async (req, res) => {

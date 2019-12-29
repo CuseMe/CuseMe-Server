@@ -62,6 +62,7 @@ module.exports = {
         password,
         newPassword
     }, token) => {
+        console.log(password, newPassword)
         if(!password || !newPassword) throw new error.ParameterError;
         const uuid = jwtExt.verify(token).data.uuid;
         const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
@@ -77,7 +78,7 @@ module.exports = {
         const putQuery = `UPDATE ${TABLE} SET password = ?, salt = ? WHERE uuid = ?`;
         const putValues = [hashedNewPassword, newSalt, uuid];
         const putResult = await db.queryParam_Parse(putQuery, putValues);
-        if(putResult.affectedRows == 0) throw new error.NotUpdatedError;
+        if(putResult.affectedRows == 0) throw new error.NotUpdatedUserError;
         return putResult;
     },
     
