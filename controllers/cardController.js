@@ -8,7 +8,7 @@ const CARD = '카드';
 
 module.exports = {
     readAll: async (req, res) => {
-        Card.readAll()
+        Card.readAll(req.headers.token)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_READ_ALL_SUCCESS, result)))
@@ -18,7 +18,7 @@ module.exports = {
     },
     read: async (req, res) => {
         const cardIdx = req.params.cardIdx
-        Card.read(cardIdx)
+        Card.read(cardIdx, req.headers.token)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_READ_SUCCESS, result)))
