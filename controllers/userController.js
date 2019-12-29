@@ -20,7 +20,7 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     signIn: async (req, res) => {
-        User.signIn(req.body.uuid)
+        User.signIn(req.body.uuid, req.body.password)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.SIGN_IN_SUCCESS, result)))
