@@ -26,15 +26,15 @@ module.exports = {
             res.status(err.status || 500)
             .send(util.successFalse(err.message))})
     },
-    updatePwd: async (req, res) => {
+    updatePwd:(req, res)=>{
         User.updatePwd(req.body, req.headers.token)
         .then(() =>
             res.status(status.OK)
-            .send(util.successTrue(message.PWD_UPDATE_SUCCESS))
+            .send(util.successTrue(message.PWD_UPDATE_SUCCESS)))
         .catch(err => {
             res.status(err.status || 500)
-            .send(util.successFalse(err.message))}))
-    },
+            .send(util.successFalse(err.message))})
+        },
     updatePhone: async (req, res) => {
         User.updatePhone(req.body, req.headers.token)
         .then(() =>
