@@ -102,7 +102,7 @@ const card = {
         const getQuery = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND uuid = ?`;
         const getValues = [cardIdx, uuid];
         const getResult = await pool.queryParam_Parse(getQuery, getValues);
-        if(getResult.length == 0) throw new AuthorizationError;
+        if(getResult.length == 0) throw new NotFoundError;
         const deleteQuery = `DELETE FROM ${TABLE} WHERE cardIdx = '${cardIdx}'`;
         const deleteResult = await pool.queryParam_None(deleteQuery);
         if(deleteResult.affectedRows == 0) throw new NotDeletedError;
