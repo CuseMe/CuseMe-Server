@@ -70,7 +70,7 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
-            console.log("getResult",getResult);
+            //console.log("getResult",getResult);
             const serial = Math.random().toString(36).substring(3);
             const postQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
             //sequence 값은 해당 사용자 칼럼 sequence 최대값으로 할 것 현재 더미 데이터로 10
@@ -92,7 +92,7 @@ const card = {
             const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE uuid = ? AND cardIdx = ?`;
             const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx]
             const result = await pool.queryParam_Parse(query, values);
-            if(result.affectedRows == 0) throw new NotUpdatedError
+            if(result.affectedRows == 0) throw new NotUpdatedError;
     },
     updateAll: async() => {
         //TODO: 카드 배열 및 전체 수정

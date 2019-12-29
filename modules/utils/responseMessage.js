@@ -14,6 +14,7 @@ module.exports = {
     EXPIRED_TOKEN: "만료된 토큰입니다",
     INVALID_TOKEN: "유효하지 않은 토큰입니다",
     EMPTY_TOKEN: "토큰이 없습니다",
+    USER_UPDATE_FAIL:"유저 추가 실패",
 
     PHONE_NUM_UPDATE_SUCCESS: "전화번호 변경 성공",
 
