@@ -6,7 +6,7 @@ module.exports = {
 
     USER_START_SUCCESS: "앱 시작 성공",
     PWD_UPDATE_SUCCESS: "유저 업데이트 성공",
-    USER_UPDATE_FAIL: "유저 업데이트 실패",
+
     SIGN_IN_SUCCESS: "로그인 성공",
     SIGN_IN_FAIL: "로그인 실패",
     NO_USER: "존재하지 않는 유저입니다.",
@@ -14,16 +14,13 @@ module.exports = {
     EXPIRED_TOKEN: "만료된 토큰입니다",
     INVALID_TOKEN: "유효하지 않은 토큰입니다",
     EMPTY_TOKEN: "토큰이 없습니다",
-    USER_UPDATE_FAIL:"유저 추가 실패",
 
     PHONE_NUM_UPDATE_SUCCESS: "전화번호 변경 성공",
 
     CARD_CREATE_SUCCESS: "카드 작성 성공",
     CARD_CREATE_FAIL: "카드 작성 실패",
     CARD_READ_ALL_SUCCESS: "카드 전체 조회 성공",
-    CARD_READ_ALL_FAIL: "카드 전체 조회 실패",
-    CARD_READ_VISIBLE_FAIL: "장애인용 카드 전체 조회 실패",
-    CARD_READ_VISIBLE_SUCCESS: "장애인용 카드 전체 조회 성공",
+    CARD_READ_ALL_FAIL: "카드 전체 조회 성공",
     CARD_READ_SUCCESS: "카드 조회 성공",
     CARD_READ_FAIL: "카드 조회 성공",
     CARD_UPDATE_SUCCESS: "카드 수정 성공",
