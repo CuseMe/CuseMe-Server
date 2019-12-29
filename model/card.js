@@ -24,16 +24,18 @@ const card = {
             return card;
     },
     readAll: async (token) => {
-        const uuid = jwtExt.verify(token).data.uuid;
-        const query = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
-        const values = [uuid]
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE own.userIdx = ?`;
+        const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
-    readVisible: async (uuid) => {
-        const query = `SELECT * FROM ${TABLE} WHERE uuid = '${uuid}' AND visible = 1`;
-        const result = await pool.queryParam_None(query);
+    readVisible: async (token) => {
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE own.userIdx = ?`;
+        const values = [userIdx]
+        const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
