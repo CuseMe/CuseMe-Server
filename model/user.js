@@ -4,24 +4,32 @@ const authUtil = require('../modules/utils/authUtil');
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/security/db/pool');
 const error = require('../errors');
+const crypto = require('crypto');
+
 const TABLE = 'user';
+const NAME = "사용자";
 
 module.exports = {
     start: async(uuid) => {
-        if(!uuid) throw new error.ParameterError;
-        const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
-        const getValues = [uuid];
-        const getResult = await db.queryParam_Parse(getQuery, getValues);
-        if(getResult.length == 0){
-            const salt = await encryptionManager.makeRandomByte();
+        const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
+        const findUserValues = [uuid];
+        const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
+        const phoneNum = '000000000000'
+        if (findUserResult.length == 0 || !findUserResult) {
+            const salt = (await crypto.randomBytes(32)).toString('hex');
             const hashedPassword = encryptionManager.encryption('0000', salt);
-            const postQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, 0)`;
-            const postValues = [uuid, hashedPassword, salt];
-            const postResult = await db.queryParam_Parse(postQuery, postValues);
-            if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
-            return postResult;
+            const userInsertQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, ?)`;
+            const userInsertValues = [uuid, hashedPassword, salt, phoneNum];
+            const userInsertResult = await db.queryParam_Parse(userInsertQuery, userInsertValues);
+            let userIdx = userInsertResult.insertId;
+            for (var i = 12; i < 15; i++) {
+                const postQuery = `INSERT INTO own (cardIdx, userIdx) VALUES(?, ?)`;
+                let postValues = [i, userIdx]
+                const postResult = await db.queryParam_Parse(postQuery, postValues);
+                console.log(postResult)
+                if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
+            }
         }
-        return getResult;
     },
     signIn: async (uuid) => {
         if(!uuid) throw new error.ParameterError
