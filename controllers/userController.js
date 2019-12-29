@@ -11,7 +11,7 @@ const authUtil = require('../modules/utils/authUtil');
 
 module.exports = {
     start: async (req, res) => {
-        User.start(req.body.uuid)
+        User.start(req.body.uuid,req.body.password)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.USER_START_SUCCESS, result)))
