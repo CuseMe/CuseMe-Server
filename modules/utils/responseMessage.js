@@ -6,7 +6,7 @@ module.exports = {
 
     USER_START_SUCCESS: "앱 시작 성공",
     PWD_UPDATE_SUCCESS: "유저 업데이트 성공",
-
+    USER_UPDATE_FAIL: "유저 업데이트 실패",
     SIGN_IN_SUCCESS: "로그인 성공",
     SIGN_IN_FAIL: "로그인 실패",
     NO_USER: "존재하지 않는 유저입니다.",

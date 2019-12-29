@@ -1,13 +1,10 @@
 const jwtExt = require('../modules/security/jwt-ext');
 const jwt = require('../modules/security/jwt');
-const authUtil = require('../modules/utils/authUtil');
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/security/db/pool');
 const error = require('../errors');
 const crypto = require('crypto');
-
 const TABLE = 'user';
-const NAME = "사용자";
 
 module.exports = {
     start: async(uuid) => {
@@ -45,6 +42,7 @@ module.exports = {
         password,
         newPassword
     }, token) => {
+        console.log(password, newPassword)
         if(!password || !newPassword) throw new error.ParameterError;
         const uuid = jwtExt.verify(token).data.uuid;
         const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
@@ -60,10 +58,10 @@ module.exports = {
         const putQuery = `UPDATE ${TABLE} SET password = ?, salt = ? WHERE uuid = ?`;
         const putValues = [hashedNewPassword, newSalt, uuid];
         const putResult = await db.queryParam_Parse(putQuery, putValues);
-        if(putResult.affectedRows == 0) throw new error.NotUpdatedError;
+        if(putResult.affectedRows == 0) throw new error.NotUpdatedUserError;
         return putResult;
     },
-    //사용자 전화번호 변경
+    
     updatePhone: async ({phoneNum}, token) => {
         if(!phoneNum) throw new ParameterError;
         const uuid = jwtExt.verify(token).data.uuid;
