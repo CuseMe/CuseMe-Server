@@ -21,9 +21,11 @@ const card = {
         const card = cardData(result[0]);
         return card;
     },
-    readAll: async () => {
-        const query = `SELECT * FROM ${TABLE}`;
-        const result = await pool.queryParam_None(query);
+    readAll: async (token) => {
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE own.userIdx = ?`;
+        const values = [userIdx]
+        const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
