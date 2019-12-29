@@ -67,17 +67,15 @@ const card = {
         token,
         serialNum) => {
             if(!serialNum) throw new ParameterError;
-            const uuid = jwtExt.verify(token).data.uuid;
+            const userIdx = jwtExt.verify(token).data.userIdx;
             const getQuery = `SELECT * from ${TABLE} WHERE serialNum = ?`;
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
             console.log("getResult",getResult[0]);
-            //const serial = Math.random().toString(36).substring(3);
-            const postQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, uuid, sequence) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
-            //sequence 값은 해당 사용자 칼럼 sequence 최대값으로 할 것 현재 더미 데이터로 10
-            //serial 값은 그대로 할 것
-            const postValues = [getResult[0].title, getResult[0].content, getResult[0].image, getResult[0].record, "1", serialNum, uuid, "10"];
+            const cardIdx = getResult[0].cardIdx;
+            const postQuery = `INSERT INTO own(cardIdx, userIdx) VALUES(?, ?)`;
+            const postValues = [cardIdx, userIdx];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
     },
