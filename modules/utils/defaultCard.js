@@ -1,5 +1,0 @@
-//defalutCard.js
-module.exports = {
-
-
-}
