@@ -15,9 +15,9 @@ const card = {
     read: async (
         cardIdx,
         token) => {
-            const uuid = jwtExt.verify(token).data.uuid;
-            const query = `SELECT * FROM ${TABLE} WHERE cardIdx = ? AND uuid = ?`;
-            const values = [cardIdx, uuid];
+            const userIdx = jwtExt.verify(token).data.userIdx
+            const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE card.cardIdx = ? AND own.userIdx = ?`;
+            const values = [cardIdx, userIdx];
             const result = await pool.queryParam_Parse(query, values);
             if(result.length == 0) throw new NotFoundError;
             const card = cardData(result[0]);
