@@ -10,7 +10,8 @@ module.exports =
             "visible": rawCardData.visible,
             "serialNum": rawCardData.serialNum,
             "sequence": rawCardData.sequence,
-            "uuid": rawCardData.uuid
+            "userIdx": rawCardData.userIdx
+            //"uuid": rawCardData.uuid
         }
         return cardData
     }

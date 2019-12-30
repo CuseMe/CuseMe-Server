@@ -11,6 +11,7 @@ const NAME = "사용자";
 
 module.exports = {
     start: async(uuid) => {
+        if(!uuid) throw new error.ParameterError;
         const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
         const findUserValues = [uuid];
         const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
@@ -51,9 +52,9 @@ module.exports = {
         newPassword
     }, token) => {
         if(!password || !newPassword) throw new error.ParameterError;
-        const uuid = jwtExt.verify(token).data.uuid;
-        const getQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
-        const getValues = [uuid];
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const getQuery = `SELECT * FROM ${TABLE} WHERE userIdx = ?`;
+        const getValues = [userIdx];
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         if(getResult.length == 0) throw new error.NoUserError;
         const user = getResult[0]
@@ -62,8 +63,8 @@ module.exports = {
         if(user.password != hashedPassword) throw new error.MissPasswordError;
         const newSalt = await encryptionManager.makeRandomByte();
         const hashedNewPassword = await encryptionManager.encryption(newPassword, newSalt);
-        const putQuery = `UPDATE ${TABLE} SET password = ?, salt = ? WHERE uuid = ?`;
-        const putValues = [hashedNewPassword, newSalt, uuid];
+        const putQuery = `UPDATE ${TABLE} SET password = ?, salt = ? WHERE userIdx = ?`;
+        const putValues = [hashedNewPassword, newSalt, userIdx];
         const putResult = await db.queryParam_Parse(putQuery, putValues);
         if(putResult.affectedRows == 0) throw new error.NotUpdatedError;
         return putResult;
@@ -72,9 +73,9 @@ module.exports = {
     updatePhone: async ({phoneNum}, token) => {
         console.log(phoneNum);
         if(!phoneNum) throw new ParameterError;
-        const uuid = jwtExt.verify(token).data.uuid;
-        const query = `UPDATE ${TABLE} SET phoneNum = ? WHERE uuid = ?`;
-        const value = [phoneNum, uuid];
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `UPDATE ${TABLE} SET phoneNum = ? WHERE userIdx = ?`;
+        const value = [phoneNum, userIdx];
         const result = await db.queryParam_Parse(query, value);
         return result;
     }

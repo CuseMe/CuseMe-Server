@@ -27,9 +27,20 @@ module.exports = {
             .send(util.successFalse(err.message)
             ))
     },
+    readVisible: async (req, res) => {
+        console.log("visible")
+        Card.readVisible(req.body.uuid)
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_READ_VISIBLE_SUCCESS, result)))
+        .catch(err =>
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)
+            ))
+    },
     count: async (req, res) => {
         const cardIdx = req.params.cardIdx
-        Card.count(cardIdx)
+        Card.count(cardIdx, req.headers.token)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
@@ -38,7 +49,8 @@ module.exports = {
             .send(util.successFalse(err.message))})
     },
     update: async (req, res) => {
-        Card.update(res,req)
+        const cardIdx = req.params.cardIdx
+        Card.update(req.files, req.body, req.headers.token, cardIdx)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_COUNT_SUCCESS, result)))
@@ -47,7 +59,7 @@ module.exports = {
             .send(util.successFalse(err.message)))
     },
     create: async(req, res) => {
-        Card.create(req.files, req.body)
+        Card.create(req.files, req.body, req.headers.token)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_CREATE_SUCCESS)))
@@ -66,7 +78,7 @@ module.exports = {
             .send(util.successFalse(err.message)))
     },
     update: async (req, res) => {
-        Card.update(req.files, req.body, req.params.cardIdx)
+        Card.update(req.files, req.body, req.headers.token, req.params.cardIdx)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
@@ -78,7 +90,7 @@ module.exports = {
         //TODO: 카드 배열 및 전체 수정
     },
     delete: async (req, res) => {
-        Card.delete(req.body, req.headers.token)
+        Card.delete(req.body.cardIdx, req.headers.token)
         .then(() => 
             res.status(status.OK)
             .send(util.successTrue(message.CARD_DELETE_SUCCESS)))
