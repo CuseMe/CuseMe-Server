@@ -5,12 +5,12 @@ const upload = require('../config/multer')
 const {LoggedIn} = require('../modules/utils/authUtil');
 const cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'record', maxCount: 1 }])
 
-router.get('/',CardController.readAll)
-router.get('/:cardIdx',CardController.read);
-router.get('/visible/1',CardController.readVisible);
+router.get('/', LoggedIn, CardController.readAll);
+router.get('/visible', CardController.readVisible);
+router.get('/:cardIdx', LoggedIn, CardController.read);
 router.put('/:cardIdx/count', LoggedIn, CardController.count);
 router.post('/', LoggedIn, cpUpload, CardController.create);
-router.post('/:serialNum', LoggedIn, CardController.download);
+router.post('/:serialNum', LoggedIn, cpUpload, CardController.download);
 router.put('/:cardIdx', LoggedIn, cpUpload, CardController.update);
 router.put('/', LoggedIn, CardController.update);
 router.delete('/', LoggedIn, CardController.delete);
