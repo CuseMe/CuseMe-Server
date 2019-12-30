@@ -16,18 +16,18 @@ module.exports = {
         const getResult = await db.queryParam_Parse(getQuery, getValues);
         //console.log('getResult@@@',getResult)
         //if(getResult.length == 0) throw new NotFoundError(NAME);
-        if(getResult.length == 0){ 
+        if(getResult.length == 0){
             const salt = await encryptionManager.makeRandomByte();
             const hashedPassword = encryptionManager.encryption('0000', salt); 
             const postQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, 0)`; 
             const postValues = [uuid, hashedPassword, salt];
             const postResult = await db.queryParam_Parse(postQuery, postValues);
-            const postCardValues = [{title:"text"},{content:"text"},{image:"text"},{record:"text"},{count: 1},{visible: 1},{serialNum:"text"},{sequence: 0},{uuid: 00000}];
-            for (var i=0; i<4; i++) {
-                const postCardQuery = `INSERT INTO CARD(title, content, image, record, count, visible, serialNum, sequence,  uuid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ${getValues})`;
-                const postCardValue= [postCardValues[i].title, postCardValues[i].content, postCardValues[i].image, postCardValues[i].record, postCardValues[i].count, postCardValues[i].visible, postCardValues[i].serialNum, postCardValues[i].sequence]; 
-            }
-            const cardResult = await db.queryParam_Parse(postCardQuery,postCardValues);
+            // const postCardValues = [{title:"text"},{content:"text"},{image:"text"},{record:"text"},{count: 1},{visible: 1},{serialNum:"text"},{sequence: 0},{uuid: 00000}];
+            // for (var i=0; i<4; i++) {
+            //     const postCardQuery = `INSERT INTO CARD(title, content, image, record, count, visible, serialNum, sequence,  uuid) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ${getValues})`;
+            //     const postCardValue= [postCardValues[i].title, postCardValues[i].content, postCardValues[i].image, postCardValues[i].record, postCardValues[i].count, postCardValues[i].visible, postCardValues[i].serialNum, postCardValues[i].sequence]; 
+            // }
+            // const cardResult = await db.queryParam_Parse(postCardQuery,postCardValues);
             if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
         }
     },
