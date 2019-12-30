@@ -28,21 +28,22 @@ const card = {
         const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE own.userIdx = ?`;
         const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
+        console.log(result);
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
-    readVisible: async (token) => {
-        const userIdx = jwtExt.verify(token).data.userIdx;
-        const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE own.userIdx = ?`;
-        const values = [userIdx]
+    readVisible: async (uuid) => {
+        console.log("uuid ", uuid);
+        const query = `SELECT * from (SELECT cardIdx FROM user JOIN own ON uuid = ? WHERE user.userIdx = own.userIdx) as T join ${TABLE} WHERE T.cardIdx = card.cardIdx AND visible = 1;`;
+        const values = [uuid];
         const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
     count: async (cardIdx, token) => {
-        const uuid = jwtExt.verify(token).data.uuid;
-        const query = `UPDATE ${TABLE} SET count = count + 1 WHERE cardIdx = ? AND uuid = ?`;
-        const values = [cardIdx, uuid];
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `UPDATE ${TABLE} JOIN own SET count = count + 1 WHERE ${TABLE}.cardIdx = own.cardIdx AND ${TABLE}.cardIdx = ? AND own.userIdx = ?`;
+        const values = [cardIdx, userIdx];
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
     },
@@ -95,9 +96,9 @@ const card = {
         token,
         cardIdx) => {
             if(!image || !title || !content || !visible ) throw new ParameterError
-            const uuid = jwtExt.verify(token).data.uuid;
-            const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE uuid = ? AND cardIdx = ?`;
-            const values = [image[0].location, record[0].location, title, content, visible, uuid, cardIdx]
+            const userIdx = jwtExt.verify(token).data.userIdx;
+            const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE userIdx = ? AND cardIdx = ?`;
+            const values = [image[0].location, record[0].location, title, content, visible, userIdx, cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
