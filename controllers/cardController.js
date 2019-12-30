@@ -27,6 +27,17 @@ module.exports = {
             .send(util.successFalse(err.message)
             ))
     },
+    readVisible: async (req, res) => {
+        console.log("visible")
+        Card.readVisible(req.body.uuid)
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(message.CARD_READ_VISIBLE_SUCCESS, result)))
+        .catch(err =>
+            res.status(err.status || 500)
+            .send(util.successFalse(err.message)
+            ))
+    },
     count: async (req, res) => {
         const cardIdx = req.params.cardIdx
         Card.count(cardIdx, req.headers.token)
@@ -67,7 +78,7 @@ module.exports = {
             .send(util.successFalse(err.message)))
     },
     update: async (req, res) => {
-        Card.update(req.files, req.body, req.params.cardIdx)
+        Card.update(req.files, req.body, req.headers.token, req.params.cardIdx)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
