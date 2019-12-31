@@ -116,6 +116,7 @@ const card = {
         const putQuery = `UPDATE own SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
         const putValues = [sequence, visible, cardIdx , userIdx];
         const putResult = await pool.queryParam_Parse(putQuery, putValues);
+        if(deleteResult.affectedRows == 0) throw new Nodata;
         console.log('putResult',putResult)
         if(putResult.length == 0) throw new NotUpdatedError;
         console.log(putResult)
