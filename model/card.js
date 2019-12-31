@@ -2,7 +2,6 @@ const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
 const { 
-    AuthorizationError, 
     ParameterError,
     NotCreatedError,
     NotDeletedError,
@@ -105,28 +104,6 @@ const card = {
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
-    // updateAll: async(
-    //     {cardIdx,
-    //     visible,
-    //     sequence},
-    //     token) => {
-    //     if(!cardIdx || !visible || !sequence) throw new ParameterError;
-    //     const userIdx = jweExt.verify(token).data.userIdx;
-    //     const deleteQuery = `DELETE FROM own WHERE userIdx = ?`;
-    //     const deleteValues = [userIdx];
-    //     const deleteResult = await pool.queryParam_Parse(deleteQuery, deleteValues);
-    //     if(deleteResult.length == 0) throw new NotDeletedError;
-    //     //const serialNum = Math.random().toString(36).substring(3);
-    //     const postQuery = `INSERT INTO own(cardIdx, userIdx, visible, sequence) VALUES(?, ?, ?, ?)`;
-    //     const postValues = [cardIdx, userIdx, visible, sequence];
-    //     const postResult = await pool.queryParam_Parse(postQuery, postValues);
-    //     if(postResult.affectedRows == 0) throw new NotUpdatedError;
-    //     const getQuery = `SELECT * from own WHERE userIdx = ?`;
-    //     const getValues = [userIdx];
-    //     const getResult = await pool.queryParam_Parse(getQuery, getValues);
-    //     if(getResult.length == 0) throw new NotFoundError;
-    //     return getResult[0];
-    // },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
         console.log(cardIdx)
