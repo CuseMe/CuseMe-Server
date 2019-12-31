@@ -7,7 +7,8 @@ const {
     NotCreatedError,
     NotDeletedError,
     NotFoundError,
-    NotUpdatedError
+    NotUpdatedError,
+    NoUserError
 } = require('../errors');
 const TABLE = 'card';
 
@@ -47,7 +48,7 @@ const card = {
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
     },
-    create: async (
+    create: async ( //sequence추가해서 저장 
         {image,
         record},
         {title,
@@ -102,8 +103,19 @@ const card = {
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
-    updateAll: async() => {
-        //TODO: 카드 배열 및 전체 수정
+    updateAll: async(token, serialNum) => {
+        const userIdx = jwtExt.verify(token).data.userIdx; //유저 아이디 검증
+        if(!token)throw new NoUserError; //토큰이 없는 경우
+        if(!serialNum) throw new ParameterError; //유저의 카드와 서버의 카드에서 다른 부분이 있는 경우
+
+        const query = `SELECT * FROM ${TABLE} JOIN own ON card.cardIdx = own.cardIdx WHERE card.serialNum = ?`;
+        const getValues = [serialNum]; //시리얼넘버 배열 받음 
+        const getResult = await pool.queryParam_Parse(getQuery, getValues);
+        if(getResult.length == 0) throw new NotFoundError;
+
+        const postQuery = `UPDATE `
+        
+        
     },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
