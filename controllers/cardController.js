@@ -80,10 +80,10 @@ module.exports = {
         Card.updateAll(req.body, req.headers.token)
         .then(() =>
         res.status(status.OK)
-            .send(util.successTrue(message.CARD_UPDATE_SUCCESS)))
+            .send(util.successTrue(status.OK,message.CARD_UPDATE_SUCCESS)))
         .catch(err =>  {
             res.status(err.status || 500)
-            .send(util.successFalse(err.message))})
+            .send(util.successFalse(status.BAD_REQUEST,err.message))})
     },
     delete: async (req, res) => {
         Card.delete(req.body.cardIdx, req.headers.token)
