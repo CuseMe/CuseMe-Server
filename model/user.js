@@ -5,9 +5,7 @@ const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/security/db/pool');
 const error = require('../errors');
 const crypto = require('crypto');
-
 const TABLE = 'user';
-const NAME = "사용자";
 
 module.exports = {
     start: async(uuid) => {
@@ -26,11 +24,9 @@ module.exports = {
                 const postQuery = `INSERT INTO own (cardIdx, userIdx) VALUES(?, ?)`;
                 let postValues = [i, userIdx];
                 const postResult = await db.queryParam_Parse(postQuery, postValues);
-                console.log(postResult)
                 if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
             }
         }
-        return []
     },
     signIn: async (uuid, password) => {
         if(!uuid || !password) throw new error.ParameterError;
