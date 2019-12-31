@@ -7,7 +7,8 @@ const {
     NotDeletedError,
     NotFoundError,
     NotUpdatedError,
-    NoUserError
+    NoUserError,
+    NoReferencedRowError
 } = require('../errors');
 const TABLE = 'card';
 
@@ -32,7 +33,7 @@ const card = {
         if(result.length == 0) throw new NotFoundError;
         return result.map(cardData);
     },
-    readVisible: async (uuid) => {
+    readVisible: async (uuid) => {// visible 1인 것만 나오게 고치기
         console.log("uuid ", uuid);
         const query = `SELECT * from (SELECT cardIdx FROM user JOIN own ON uuid = ? WHERE user.userIdx = own.userIdx) as T join ${TABLE} WHERE T.cardIdx = card.cardIdx`;
         const values = [uuid];
@@ -115,8 +116,7 @@ const card = {
         const putQuery = `UPDATE own SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
         const putValues = [sequence, visible, cardIdx , userIdx];
         const putResult = await pool.queryParam_Parse(putQuery, putValues);
-        if(deleteResult.affectedRows == 0) throw new Nodata;
-        console.log('putResult',putResult)
+        if(putResult.affectedRows == 0) throw new NoReferencedRowError;
         if(putResult.length == 0) throw new NotUpdatedError;
         console.log(putResult)
         return putResult;
