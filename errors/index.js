@@ -8,6 +8,8 @@ module.exports = {
     NotCreatedError: require('./NotCreatedError'),
     NotUpdatedError: require('./NotUpdatedError'),
     NotDeletedError: require('./NotDeletedError'),
-    NoUserError: require('./NoUserError')
+    NoUserError: require('./NoUserError'),
+    NoReferencedRowError: require('./NoReferencedRowError'),
+    DuplicatedEntryError: require('./DuplicatedEntryError'),
 };
 

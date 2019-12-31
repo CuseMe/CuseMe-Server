@@ -27,7 +27,7 @@ module.exports = {
         .catch(err => {
             res.status(err.status || 500)
             .send(util.successFalse(status.BAD_REQUEST, err.message))})
-    }, 
+    },
     updatePwd:(req, res)=>{
         User.updatePwd(req.body, req.headers.token)
         .then(() =>

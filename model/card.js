@@ -2,7 +2,6 @@ const pool = require('../modules/security/db/pool');
 const cardData = require('../modules/data/cardData');
 const jwtExt = require('../modules/security/jwt-ext');
 const { 
-    AuthorizationError, 
     ParameterError,
     NotCreatedError,
     NotDeletedError,
