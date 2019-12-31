@@ -6,11 +6,12 @@ const db = require('../modules/security/db/pool');
 const error = require('../errors');
 const crypto = require('crypto');
 const TABLE = 'user';
+const OWN_TABLE = 'own';
 
 module.exports = {
     start: async(uuid) => {
         if(!uuid) throw new error.ParameterError;
-        const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
+        const findUserQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
         const findUserValues = [uuid];
         const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
         if (findUserResult.length == 0 || !findUserResult) {
@@ -21,7 +22,7 @@ module.exports = {
             const userInsertResult = await db.queryParam_Parse(userInsertQuery, userInsertValues);
             let userIdx = userInsertResult.insertId;
             for (var i = 0; i < 4; i++) {
-                const postQuery = `INSERT INTO own (cardIdx, userIdx) VALUES(?, ?)`;
+                const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx) VALUES(?, ?)`;
                 let postValues = [i, userIdx];
                 const postResult = await db.queryParam_Parse(postQuery, postValues);
                 if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
