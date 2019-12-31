@@ -6,7 +6,8 @@ const {
     NotCreatedError,
     NotDeletedError,
     NotFoundError,
-    NotUpdatedError
+    NotUpdatedError,
+    NoUserError
 } = require('../errors');
 const TABLE = 'card';
 
@@ -46,7 +47,7 @@ const card = {
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
     },
-    create: async (
+    create: async ( //sequence추가해서 저장 
         {image,
         record},
         {title,
@@ -103,6 +104,21 @@ const card = {
             const values = [image[0].location, record[0].location, title, content, userIdx, cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
+    },
+    updateAll: async(
+        {cardIdx,
+        visible,
+        sequence},
+        token) => {
+        if(!cardIdx ||!visible || !sequence) throw new ParameterError;
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const putQuery = `UPDATE own SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
+        const putValues = [sequence, visible, cardIdx , userIdx];
+        const putResult = await pool.queryParam_Parse(putQuery, putValues);
+        console.log('putResult',putResult)
+        if(putResult.length == 0) throw new NotUpdatedError;
+        console.log(putResult)
+        return putResult;
     },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
