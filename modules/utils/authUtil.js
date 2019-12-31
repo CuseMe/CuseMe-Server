@@ -24,17 +24,17 @@ const authUtil = {
         var token = req.headers.token;
         if(!token){
             return res.status(statusCode.BAD_REQUEST).
-            send(util.successFalse(resMessage.EMPTY_TOKEN))
+            send(util.successFalse(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN))
         }
         const result = jwt.verify(token); 
         console.log(result);
         if(result == -1) {
             return res.status(statusCode.UNAUTHORIZED)
-            .send(util.successFalse(resMessage.EXPIRED_TOKEN)); 
+            .send(util.successFalse(statusCode.UNAUTHORIZED, resMessage.EXPIRED_TOKEN)); 
         }
         if(result == -2) {
             return res.status(statusCode.UNAUTHORIZED)
-            .send(util.successFalse(resMessage.INVALID_TOKEN)); 
+            .send(util.successFalse(statusCode.UNAUTHORIZED, resMessage.INVALID_TOKEN)); 
         }
         const userIdx = result.idx;
         req.decoded = userIdx;
