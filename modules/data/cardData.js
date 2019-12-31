@@ -11,7 +11,6 @@ module.exports =
             "serialNum": rawCardData.serialNum,
             "sequence": rawCardData.sequence,
             "userIdx": rawCardData.userIdx
-            //"uuid": rawCardData.uuid
         }
         return cardData
     }
