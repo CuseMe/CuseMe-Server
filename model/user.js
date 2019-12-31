@@ -15,12 +15,11 @@ module.exports = {
         const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
         const findUserValues = [uuid];
         const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
-        const phoneNum = null;
         if (findUserResult.length == 0 || !findUserResult) {
             const salt = (await crypto.randomBytes(32)).toString('hex');
             const hashedPassword = encryptionManager.encryption('0000', salt);
-            const userInsertQuery = `INSERT INTO ${TABLE}(uuid, password, salt, phoneNum) VALUES (?, ?, ?, ?)`;
-            const userInsertValues = [uuid, hashedPassword, salt, phoneNum];
+            const userInsertQuery = `INSERT INTO ${TABLE}(uuid, password, salt) VALUES (?, ?, ?)`;
+            const userInsertValues = [uuid, hashedPassword, salt];
             const userInsertResult = await db.queryParam_Parse(userInsertQuery, userInsertValues);
             let userIdx = userInsertResult.insertId;
             for (var i = 12; i < 15; i++) {
@@ -32,6 +31,7 @@ module.exports = {
             }
             
         }
+        return [];
     },
     signIn: async (uuid, password) => {
         if(!uuid || !password) throw new error.ParameterError;
