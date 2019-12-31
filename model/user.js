@@ -15,7 +15,7 @@ module.exports = {
         const findUserQuery = `SELECT * FROM user WHERE uuid = ?`;
         const findUserValues = [uuid];
         const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
-        const phoneNum = '000000000000'
+        const phoneNum = null;
         if (findUserResult.length == 0 || !findUserResult) {
             const salt = (await crypto.randomBytes(32)).toString('hex');
             const hashedPassword = encryptionManager.encryption('0000', salt);
@@ -25,11 +25,12 @@ module.exports = {
             let userIdx = userInsertResult.insertId;
             for (var i = 12; i < 15; i++) {
                 const postQuery = `INSERT INTO own (cardIdx, userIdx) VALUES(?, ?)`;
-                let postValues = [i, userIdx]
+                let postValues = [i, userIdx];
                 const postResult = await db.queryParam_Parse(postQuery, postValues);
                 console.log(postResult)
                 if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
             }
+            
         }
     },
     signIn: async (uuid, password) => {

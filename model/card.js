@@ -34,7 +34,7 @@ const card = {
     },
     readVisible: async (uuid) => {
         console.log("uuid ", uuid);
-        const query = `SELECT * from (SELECT cardIdx FROM user JOIN own ON uuid = ? WHERE user.userIdx = own.userIdx) as T join ${TABLE} WHERE T.cardIdx = card.cardIdx AND visible = 1;`;
+        const query = `SELECT * from (SELECT cardIdx FROM user JOIN own ON uuid = ? WHERE user.userIdx = own.userIdx) as T join ${TABLE} WHERE T.cardIdx = card.cardIdx`;
         const values = [uuid];
         const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) throw new NotFoundError;
@@ -42,7 +42,7 @@ const card = {
     },
     count: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
-        const query = `UPDATE ${TABLE} JOIN own SET count = count + 1 WHERE ${TABLE}.cardIdx = own.cardIdx AND ${TABLE}.cardIdx = ? AND own.userIdx = ?`;
+        const query = `UPDATE card JOIN own SET count = count + 1 WHERE card.cardIdx = own.cardIdx AND card.cardIdx = ? AND own.userIdx = ?`;
         const values = [cardIdx, userIdx];
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
@@ -51,24 +51,24 @@ const card = {
         {image,
         record},
         {title,
-        content,
-        visible,
-        sequence},
+        content},
         token) => {
-            if(!image || !title || !content || !visible || !sequence) throw new ParameterError
+            if(!image || !title || !content) throw new ParameterError
             //랜덤 시리얼 번호가 같을 때 재설정이 필요
             const serialNum = Math.random().toString(36).substring(3);
             const userIdx = jwtExt.verify(token).data.userIdx;
-            const cardCreateQuery = `INSERT INTO ${TABLE}(title, content, image, record, visible, serialNum, sequence) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-            const cardCreateValues = [title, content, image[0].location, record[0].location, visible, serialNum, sequence];
+            const cardCreateQuery = `INSERT INTO ${TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
+            const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
             const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
             if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
-            const cardIdx = cardCreateResult.insertId
-            console.log('test '+cardIdx)
-            const postQuery = `INSERT INTO own(cardIdx, userIdx) VALUES(?, ?)`;
-            const postValues = [cardIdx, userIdx];
+            const cardIdx = cardCreateResult.insertId;
+            const sequenceQuery = `SELECT count(*) AS count FROM own WHERE userIdx = ?`;
+            const sequenceValues = [userIdx];
+            const sequenceResult = await pool.queryParam_Parse(sequenceQuery, sequenceValues);
+            const count = sequenceResult[0].count;
+            const postQuery = `INSERT INTO own(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
+            const postValues = [cardIdx, userIdx, count];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
-            console.log(2)
             if(postResult.affectedRows == 0) throw new NotCreatedError; 
     },
     download: async (
@@ -80,10 +80,14 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
-            console.log("getResult",getResult[0]);
             const cardIdx = getResult[0].cardIdx;
-            const postQuery = `INSERT INTO own(cardIdx, userIdx) VALUES(?, ?)`;
-            const postValues = [cardIdx, userIdx];
+            const getSequenceQuery = `SELECT sequence FROM own JOIN card WHERE own.cardIdx = card.cardIdx AND card.cardIdx = ?`;
+            const getSequenceValues = [cardIdx];
+            const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
+            if(getSequenceResult.length == 0) throw new NotFoundError;
+            const sequence = getSequenceResult[0];
+            const postQuery = `INSERT INTO own(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
+            const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
     },
@@ -91,20 +95,38 @@ const card = {
         {image,
         record},
         {title,
-        content,
-        visible},
+        content},
         token,
         cardIdx) => {
-            if(!image || !title || !content || !visible ) throw new ParameterError
+            if(!image || !title || !content) throw new ParameterError
             const userIdx = jwtExt.verify(token).data.userIdx;
-            const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ?, visible = ? WHERE userIdx = ? AND cardIdx = ?`;
-            const values = [image[0].location, record[0].location, title, content, visible, userIdx, cardIdx]
+            const query = `UPDATE ${TABLE} SET image = ?, record = ?, title = ?, content = ? WHERE userIdx = ? AND cardIdx = ?`;
+            const values = [image[0].location, record[0].location, title, content, userIdx, cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
-    updateAll: async() => {
-        //TODO: 카드 배열 및 전체 수정
-    },
+    // updateAll: async(
+    //     {cardIdx,
+    //     visible,
+    //     sequence},
+    //     token) => {
+    //     if(!cardIdx || !visible || !sequence) throw new ParameterError;
+    //     const userIdx = jweExt.verify(token).data.userIdx;
+    //     const deleteQuery = `DELETE FROM own WHERE userIdx = ?`;
+    //     const deleteValues = [userIdx];
+    //     const deleteResult = await pool.queryParam_Parse(deleteQuery, deleteValues);
+    //     if(deleteResult.length == 0) throw new NotDeletedError;
+    //     //const serialNum = Math.random().toString(36).substring(3);
+    //     const postQuery = `INSERT INTO own(cardIdx, userIdx, visible, sequence) VALUES(?, ?, ?, ?)`;
+    //     const postValues = [cardIdx, userIdx, visible, sequence];
+    //     const postResult = await pool.queryParam_Parse(postQuery, postValues);
+    //     if(postResult.affectedRows == 0) throw new NotUpdatedError;
+    //     const getQuery = `SELECT * from own WHERE userIdx = ?`;
+    //     const getValues = [userIdx];
+    //     const getResult = await pool.queryParam_Parse(getQuery, getValues);
+    //     if(getResult.length == 0) throw new NotFoundError;
+    //     return getResult[0];
+    // },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
         console.log(cardIdx)
