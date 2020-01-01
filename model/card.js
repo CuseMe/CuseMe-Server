@@ -113,14 +113,10 @@ const card = {
             const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
             const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
             if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
-// 새로운 카드 인덱스를 불러옴
-            const sequenceQuery = `SELECT cardIdx FROM ${CARD_TABLE} WHERE serialNum = ?`;
-            const sequenceValues = [serialNum];
-            const sequenceResult = await pool.queryParam_Parse(sequenceQuery, sequenceValues);
-            const newCardIdx = sequenceResult[0].cardIdx;
-    
+            const newIdx = cardCreateResult.insertId;
+
             const query = `UPDATE ${OWN_TABLE} SET cardIdx = ? WHERE userIdx = ? and cardIdx = ?`; 
-            const values = [newCardIdx,userIdx,cardIdx]
+            const values = [newIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
