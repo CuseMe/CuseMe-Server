@@ -28,7 +28,7 @@ module.exports = {
             ))
     },
     readVisible: async (req, res) => {
-        Card.readVisible(req.headers.uuid)
+        Card.readVisible(req.headers.token)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_READ_VISIBLE_SUCCESS, result)))
