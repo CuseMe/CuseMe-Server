@@ -30,16 +30,15 @@ const card = {
         const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx WHERE ${OWN_TABLE}.userIdx = ?`;
         const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
-        if(result.length == 0) throw new NotFoundError;
+        if(result.length == 0) return [];
         return result.map(cardData);
     },
     readVisible: async (token) => {
-        const uuid = jwtExt.verify(token).data.uuid;
-        const query = `SELECT * from (SELECT cardIdx FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON uuid = ? WHERE ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx) as T join ${CARD_TABLE} WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
-        const values = [uuid];
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx where ${OWN_TABLE}.visible = 1 AND ${OWN_TABLE}.userIdx = ?`;        
+        const values = [userIdx];
         const result = await pool.queryParam_Parse(query, values);
-        console.log("!!!!", result)
-        if(result.length == 0) throw new NotFoundError;
+        if(result.length == 0) [];
         return result.map(cardData);
     },
     count: async (cardIdx, token) => {
@@ -53,7 +52,8 @@ const card = {
         {image,
         record},
         {title,
-        content},
+        content,
+        visible},
         token) => {
             if(!image || !title || !content) throw new ParameterError
             //랜덤 시리얼 번호가 같을 때 재설정이 필요
@@ -68,8 +68,9 @@ const card = {
             const sequenceValues = [userIdx];
             const sequenceResult = await pool.queryParam_Parse(sequenceQuery, sequenceValues);
             const count = sequenceResult[0].count;
-            const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
-            const postValues = [cardIdx, userIdx, count];
+            const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence, visible) VALUES(?, ?, ?, ?)`;
+            const visible_boolean = ~~Boolean(visible)
+            const postValues = [cardIdx, userIdx, count, visible_boolean];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError; 
     },

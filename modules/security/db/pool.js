@@ -1,4 +1,4 @@
-const poolPromise = require('../../../config/dbConfig');
+const poolPromise = require('../../../config/dbconfig');
 const { DatabaseError, NoReferencedRowError, DuplicatedEntryError } = require('../../../errors');
 
 module.exports = {
