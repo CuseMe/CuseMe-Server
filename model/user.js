@@ -1,5 +1,6 @@
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/security/db/pool');
+const jwtExt = require('../modules/security/jwt-ext');
 const error = require('../errors');
 const crypto = require('crypto');
 const TABLE = 'user';

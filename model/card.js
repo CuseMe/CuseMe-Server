@@ -29,13 +29,14 @@ const card = {
         const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx WHERE ${OWN_TABLE}.userIdx = ?`;
         const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
-        if(result.length == 0) return [];
+        if(result.length == 0) return [];//throw new Error 는??
         return result.map(cardData);
     },
-    readVisible: async (token) => {
-        const userIdx = jwtExt.verify(token).data.userIdx;
-        const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx where ${OWN_TABLE}.visible = 1 AND ${OWN_TABLE}.userIdx = ?`;        
-        const values = [userIdx];
+    readVisible: async (uuid) => {
+        //const userIdx = jwtExt.verify(token).data.userIdx;
+        //const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx where ${OWN_TABLE}.visible = 1 AND ${OWN_TABLE}.userIdx = ?`;        
+        const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
+        const values = [uuid];
         const result = await pool.queryParam_Parse(query, values);
         if(result.length == 0) [];
         return result.map(cardData);
