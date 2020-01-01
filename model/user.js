@@ -19,8 +19,8 @@ module.exports = {
             const userInsertResult = await db.queryParam_Parse(userInsertQuery, userInsertValues);
             let userIdx = userInsertResult.insertId;
             for (var i = 0; i < 4; i++) {
-                const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx) VALUES(?, ?)`;
-                let postValues = [i, userIdx];
+                const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
+                let postValues = [i, userIdx, i];
                 const postResult = await db.queryParam_Parse(postQuery, postValues);
                 if(postResult.affectedRows == 0) throw new error.NotUpdatedError;
             }
