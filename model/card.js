@@ -99,8 +99,11 @@ const card = {
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
-            const query = `select * from card join own`
-            return postResult
+            const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx WHERE ${CARD_TABLE}.serialNum = ?`;
+            const values = [serialNum]
+            const result = await pool.queryParam_Parse(query, values)
+            const card = cardData(result[0]);
+            return card
     },
     update: async (
         {image,
