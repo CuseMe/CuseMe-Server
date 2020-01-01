@@ -11,6 +11,7 @@ const {
 } = require('../errors');
 const CARD_TABLE = 'card';
 const OWN_TABLE = 'own';
+const USER_TABLE = 'user';
 
 const card = {
     read: async (
@@ -29,13 +30,11 @@ const card = {
         const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx WHERE ${OWN_TABLE}.userIdx = ?`;
         const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
-        if(result.length == 0) return [];//throw new Error 는??
+        if(result.length == 0) return [];
         return result.map(cardData);
     },
     readVisible: async (uuid) => {
-        //const userIdx = jwtExt.verify(token).data.userIdx;
-        //const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx where ${OWN_TABLE}.visible = 1 AND ${OWN_TABLE}.userIdx = ?`;        
-        const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
+        const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx, visible, count, sequence FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
         const values = [uuid];
         const result = await pool.queryParam_Parse(query, values);
         if(result.length == 0) [];
@@ -48,7 +47,7 @@ const card = {
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
     },
-    create: async ( //sequence추가해서 저장 
+    create: async (
         {image,
         record},
         {title,
@@ -90,19 +89,16 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
-
             const cardIdx = getResult[0].cardIdx;
             const getSequenceQuery = `SELECT sequence FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND ${CARD_TABLE}.cardIdx = ?`;
             const getSequenceValues = [cardIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
-
             const sequence = getSequenceResult[0];
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
-
             const query = `select * from card join own`
             return postResult
     },
@@ -121,7 +117,6 @@ const card = {
             const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
             if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
             const newIdx = cardCreateResult.insertId;
-
             const query = `UPDATE ${OWN_TABLE} SET cardIdx = ? WHERE userIdx = ? and cardIdx = ?`; 
             const values = [newIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
