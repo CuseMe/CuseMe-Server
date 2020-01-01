@@ -1,6 +1,3 @@
-const jwtExt = require('../modules/security/jwt-ext');
-const jwt = require('../modules/security/jwt');
-const authUtil = require('../modules/utils/authUtil');
 const encryptionManager = require('../modules/security/encryptionManager');
 const db = require('../modules/security/db/pool');
 const error = require('../errors');
@@ -43,7 +40,6 @@ module.exports = {
         const jwtToken = jwtExt.publish({userIdx, uuid});
         return {token :jwtToken.token};
     },
-    //사용자 비밀번호 수정
     updatePwd : async ({
         password,
         newPassword
@@ -66,7 +62,6 @@ module.exports = {
         if(putResult.affectedRows == 0) throw new error.NotUpdatedError;
         return putResult;
     },
-    //사용자 전화번호 변경
     updatePhone: async ({phoneNum}, token) => {
         console.log(phoneNum);
         if(!phoneNum) throw new ParameterError;
