@@ -102,7 +102,12 @@ const card = {
         cardIdx) => {
             if(!image || !title || !content) throw new ParameterError
             const userIdx = jwtExt.verify(token).data.userIdx;
-            const query = `UPDATE ${CARD_TABLE} SET image = ?, record = ?, title = ?, content = ? WHERE userIdx = ? AND cardIdx = ?`;
+            const serialNum = Math.random().toString(36).substring(3);
+            const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
+            const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+            const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+            if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            const query = `UPDATE ${CARD_TABLE} SET image = ?, record = ?, title = ?, content = ? WHERE userIdx = ? AND cardIdx = ?`; 
             const values = [image[0].location, record[0].location, title, content, userIdx, cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
