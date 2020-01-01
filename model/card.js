@@ -11,7 +11,6 @@ const {
 } = require('../errors');
 const CARD_TABLE = 'card';
 const OWN_TABLE = 'own';
-const USER_TABLE = 'user';
 
 const card = {
     read: async (
@@ -57,8 +56,15 @@ const card = {
         visible},
         token) => {
             if(!image || !title || !content) throw new ParameterError
-            //랜덤 시리얼 번호가 같을 때 재설정이 필요
-            const serialNum = Math.random().toString(36).substring(3);
+            let serialNum = Math.random().toString(36).substring(3);
+            const verifyQuery = `SELECT serialNum FROM ${CARD_TABLE} WHERE serialNum = ?`;
+            let verifyValues = [serialNum];
+            let verifyResult = await pool.queryParam_Parse(verifyQuery, verifyValues);
+            while(verifyResult.length != 0 ){
+                let serialNum = Math.random().toString(36).substring(3);
+                let verifyValues = [serialNum];
+                verifyResult = await pool.queryParam_Parse(verifyQuery, verifyValues);
+            }
             const userIdx = jwtExt.verify(token).data.userIdx;
             const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
             const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
