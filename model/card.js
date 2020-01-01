@@ -83,16 +83,21 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
+
             const cardIdx = getResult[0].cardIdx;
             const getSequenceQuery = `SELECT sequence FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND ${CARD_TABLE}.cardIdx = ?`;
             const getSequenceValues = [cardIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
+
             const sequence = getSequenceResult[0];
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
+
+            const query = `select * from card join own`
+            return postResult
     },
     update: async (
         {image,
@@ -103,8 +108,19 @@ const card = {
         cardIdx) => {
             if(!image || !title || !content) throw new ParameterError
             const userIdx = jwtExt.verify(token).data.userIdx;
-            const query = `UPDATE ${CARD_TABLE} SET image = ?, record = ?, title = ?, content = ? WHERE userIdx = ? AND cardIdx = ?`;
-            const values = [image[0].location, record[0].location, title, content, userIdx, cardIdx]
+            const serialNum = Math.random().toString(36).substring(3);
+            const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`; 
+            const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+            const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+            if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
+// 새로운 카드 인덱스를 불러옴
+            const sequenceQuery = `SELECT cardIdx FROM ${CARD_TABLE} WHERE serialNum = ?`;
+            const sequenceValues = [serialNum];
+            const sequenceResult = await pool.queryParam_Parse(sequenceQuery, sequenceValues);
+            const newCardIdx = sequenceResult[0].cardIdx;
+    
+            const query = `UPDATE ${OWN_TABLE} SET cardIdx = ? WHERE userIdx = ? and cardIdx = ?`; 
+            const values = [newCardIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
