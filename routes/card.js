@@ -6,7 +6,7 @@ const {LoggedIn} = require('../modules/utils/authUtil');
 const cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'record', maxCount: 1 }])
 
 router.get('/', LoggedIn, CardController.readAll);
-router.get('/visible', CardController.readVisible);
+router.post('/visible', CardController.readVisible);
 router.get('/:cardIdx', LoggedIn, CardController.read);
 router.put('/:cardIdx/count', LoggedIn, CardController.count);
 router.post('/', LoggedIn, cpUpload, CardController.create);
