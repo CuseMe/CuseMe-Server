@@ -61,7 +61,7 @@ module.exports = {
         Card.download(req.headers.token, serialNum)
         .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(status.OK, message.CARD_DOWNLOAD_SUCCESS)))
+            .send(util.successTrue(status.OK, message.CARD_DOWNLOAD_SUCCESS,result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(status.BAD_REQUEST, err.message)))
