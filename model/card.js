@@ -7,6 +7,7 @@ const {
     NotDeletedError,
     NotFoundError,
     NotUpdatedError,
+    NoReferencedRowError
 } = require('../errors');
 const CARD_TABLE = 'card';
 const OWN_TABLE = 'own';
@@ -120,7 +121,7 @@ const card = {
         const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
         const putValues = [sequence, visible, cardIdx , userIdx];
         const putResult = await pool.queryParam_Parse(putQuery, putValues);
-        if(putResult.length == 0) throw new NotUpdatedError;
+        if(putResult.affectedRows == 0) throw new NoReferencedRowError;
         return putResult;
     },
     delete: async (cardIdx, token) => {
