@@ -96,6 +96,13 @@
 
 
 &nbsp;
+
+### 🛠개발 환경
+- Node.js + pm2
+- MySQL
+
+&nbsp;
+
 ## 😁 개발자들 
 
 [김해리](https://github.com/khl6235)
