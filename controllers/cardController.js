@@ -85,7 +85,7 @@ module.exports = {
             .send(util.successFalse(status.BAD_REQUEST,err.message))})
     },
     delete: async (req, res) => {
-        Card.delete(req.body.cardIdx, req.headers.token)
+        Card.delete(req.params.cardIdx, req.headers.token)
         .then(() => 
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_DELETE_SUCCESS)))
