@@ -4,7 +4,6 @@ const {
     status,
     message
 } = require('../modules/utils');
-const CARD = '카드';
 
 module.exports = {
     readAll: async (req, res) => {

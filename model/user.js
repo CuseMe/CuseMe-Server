@@ -64,7 +64,6 @@ module.exports = {
         return putResult;
     },
     updatePhone: async ({phoneNum}, token) => {
-        console.log(phoneNum);
         if(!phoneNum) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
         const query = `UPDATE ${TABLE} SET phoneNum = ? WHERE userIdx = ?`;

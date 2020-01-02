@@ -15,6 +15,4 @@ router.put('/:cardIdx', LoggedIn, cpUpload, CardController.update);
 router.put('/', LoggedIn, CardController.updateAll);
 router.delete('/:cardIdx', LoggedIn, CardController.delete);
 
-console.log('baseUri/cards');
-
 module.exports = router;
