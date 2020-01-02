@@ -96,13 +96,18 @@
 
 
 &nbsp;
+
+## 🛠개발 환경
+- Node.js + pm2
+- MySQL
+
+&nbsp;
+
 ## 😁 개발자들 
 
-[김해리](https://github.com/khl6235)
+- 김강희 ([ganghee](https://github.com/ganghee))
+- 김해리 ([khl6235](https://github.com/khl6235))
+- 이시연 ([siyeons](https://github.com/siyeons))
+- 황채연 ([funnkiddo](https://github.com/funnkiddo))
 
-[황채연](https://github.com/funnkiddo)
-
-[김강희](https://github.com/ganghee)
-
-[이시연](https://github.com/siyeons)
 
