@@ -31,7 +31,7 @@ const card = {
         const values = [userIdx]
         const result = await pool.queryParam_Parse(query,values);
         if(result.length == 0) return [];
-        return result.map(cardData);
+        return result.map(cardData);// map을 사용하기때문에 return [ ]은 의미X
     },
     readVisible: async (uuid) => {
         const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx, visible, count, sequence FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
@@ -126,17 +126,18 @@ const card = {
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
     updateAll: async(
-        {cardIdx,
-        visible,
-        sequence},
+        arr,
         token) => {
-        if(!cardIdx ||!visible || !sequence) throw new ParameterError;
+        //if(!cardIdx ||!visible || !sequence) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
-        const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
-        const putValues = [sequence, visible, cardIdx , userIdx];
-        const putResult = await pool.queryParam_Parse(putQuery, putValues);
-        if(putResult.affectedRows == 0) throw new NoReferencedRowError;
-        return putResult;
+        for (var i=0;i<arr.length;i++){
+            const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
+            const visible = arr[i].visible
+            const visible_boolean = ~~Boolean(visible)
+            const putValues = [arr[i].sequence, visible_boolean, arr[i].cardIdx , userIdx];
+            const putResult = await pool.queryParam_Parse(putQuery, putValues);
+        }
+            //if(putResult.affectedRows == 0) throw new NoReferencedRowError;
     },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
