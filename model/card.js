@@ -126,17 +126,17 @@ const card = {
             if(result.affectedRows == 0) throw new NotUpdatedError;
     },
     updateAll: async(
-        {cardIdx,
-        visible,
-        sequence},
+        body,
         token) => {
-        if(!cardIdx ||!visible || !sequence) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
-        const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
-        const putValues = [sequence, visible, cardIdx , userIdx];
-        const putResult = await pool.queryParam_Parse(putQuery, putValues);
-        if(putResult.affectedRows == 0) throw new NoReferencedRowError;
-        return putResult;
+        for(var i = 0; i < body.length; i++){
+            var visible = (body[i].visible === 'true');
+            //let visible = ~~Boolean(body[i].visible)
+            const query = `update own set sequence = ?, visible = ? where cardIdx = ? and userIdx = ?`;
+            const values = [body[i].sequence, visible, body[i].cardIdx , userIdx];
+            const result = await pool.queryParam_Parse(query, values);
+            if(result.affectedRows == 0) throw new NoReferencedRowError;
+        }
     },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
