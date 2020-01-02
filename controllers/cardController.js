@@ -4,7 +4,6 @@ const {
     status,
     message
 } = require('../modules/utils');
-const CARD = '카드';
 
 module.exports = {
     readAll: async (req, res) => {
@@ -17,7 +16,7 @@ module.exports = {
             .send(util.successFalse(status.BAD_REQUEST, err.message))})
     },
     read: async (req, res) => {
-        const cardIdx = req.params.cardIdx;
+        const cardIdx = req.params.cardIdx
         Card.read(cardIdx, req.headers.token)
         .then(result =>
             res.status(status.OK)
@@ -28,7 +27,7 @@ module.exports = {
             ))
     },
     readVisible: async (req, res) => {
-        Card.readVisible(req.body.uuid)
+        Card.readVisible(req.headers.token)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_READ_VISIBLE_SUCCESS, result)))
@@ -85,7 +84,7 @@ module.exports = {
             .send(util.successFalse(status.BAD_REQUEST,err.message))})
     },
     delete: async (req, res) => {
-        Card.delete(req.body.cardIdx, req.headers.token)
+        Card.delete(req.params.cardIdx, req.headers.token)
         .then(() => 
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_DELETE_SUCCESS)))

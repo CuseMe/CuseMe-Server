@@ -13,8 +13,6 @@ router.post('/', LoggedIn, cpUpload, CardController.create);
 router.post('/:serialNum', LoggedIn, cpUpload, CardController.download);
 router.put('/:cardIdx', LoggedIn, cpUpload, CardController.update);
 router.put('/', LoggedIn, CardController.updateAll);
-router.delete('/', LoggedIn, CardController.delete);
-
-console.log('baseUri/cards');
+router.delete('/:cardIdx', LoggedIn, CardController.delete);
 
 module.exports = router;
