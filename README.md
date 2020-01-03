@@ -69,7 +69,7 @@
 &nbsp;
 
 ## :memo: ERD
-![erd](https://user-images.githubusercontent.com/35549653/71642896-a3816f80-2cf5-11ea-8ce8-e1cd0cae812b.png)
+![ERD](https://user-images.githubusercontent.com/52127966/71724507-da7d8f80-2e73-11ea-852b-703cd5457a04.png)
 &nbsp;
 &nbsp;
 
