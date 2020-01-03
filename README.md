@@ -38,25 +38,15 @@
 &nbsp;
 
 
-## 📋 핵심 기능
+## 🐳 Main Functions 
 
-   1. 카드 전체 조회
-   2. 카드 상세 조회
-   3. 카드 전체 조회(장애인용)
-   4. 카드 추가
-   5. 카드 상세 수정
-   6. 카드 전체 수정 및 정렬
-   7. 카드 삭제
-   8. 카드 다운받기
-   9. 카드 클릭 횟수 증가
-   10. 앱 실행
-   11. 보호자 모드로 로그인
-   12. 비밀번호 변경
-   13. 보호자 전화번호 변경
+   1. 회원가입 없이 장치 고유의 아이디인 UUID로 사용자 생성/식별
+   2. 카드 각각의 시리얼번호를 중복되지 않는 랜덤값으로 생성하여 다운로드 기능 구현
+   3. 카드 조회 시 클라이언트에서 변경된 순서대로 / 많이 클릭 된 순서대로 / 이름 순으로 정렬하여 보여줌
    
 &nbsp;
 
-## Dependencies
+## ⚙️ Dependencies
 ```
 "dependencies": {
 	"aws-sdk": "^2.596.0",
@@ -85,7 +75,7 @@
 
 
 
-## 💻 서버 아키텍쳐 
+## 💻 Architecture 
 
 ![01_AWS_Architecture](https://user-images.githubusercontent.com/35549653/68077714-0ba5f900-fe0c-11e9-89a3-3941a3329238.png)
 
@@ -97,13 +87,15 @@
 
 &nbsp;
 
-## 🛠개발 환경
-- Node.js + pm2
+## 🛠 Tech Stack
+
+- Node.js + Express
+- PM2
 - MySQL
 
 &nbsp;
 
-## 😁 개발자들 
+## 😁 Our team
 
 - 김강희 ([ganghee](https://github.com/ganghee))
 - 김해리 ([khl6235](https://github.com/khl6235))
