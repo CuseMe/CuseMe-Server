@@ -48,9 +48,9 @@ module.exports = {
     },
     create: async(req, res) => {
         Card.create(req.files, req.body, req.headers.token)
-        .then(() =>
+        .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(status.OK, message.CARD_CREATE_SUCCESS)))
+            .send(util.successTrue(status.OK, message.CARD_CREATE_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.status, err.message)))

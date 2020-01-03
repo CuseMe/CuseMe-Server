@@ -76,6 +76,10 @@ const card = {
             const postValues = [cardIdx, userIdx, count, visible_boolean];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError; 
+            const query = `SELECT * FROM card WHERE cardIdx = ?`;
+            const value = [cardIdx];
+            const result = await pool.queryParam_Parse(query, value);
+            return result[0];
     },
     download: async (
         token,
@@ -122,6 +126,7 @@ const card = {
             const values = [newIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
+        
     },
     updateAll: async(
         arr,
