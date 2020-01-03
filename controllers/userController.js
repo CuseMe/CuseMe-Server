@@ -14,7 +14,7 @@ module.exports = {
             .send(util.successTrue(status.OK, message.USER_START_SUCCESS, result)))
         .catch(err => {
             res.status(err.status || 500)
-            .send(util.successFalse(status.BAD_REQUEST, err.message))})
+            .send(util.successFalse(err.status, err.message))})
     },
     signIn: async (req, res) => {
         User.signIn(req.body.uuid, req.body.password)
@@ -23,7 +23,7 @@ module.exports = {
             .send(util.successTrue(status.OK, message.SIGN_IN_SUCCESS, result)))
         .catch(err => {
             res.status(err.status || 500)
-            .send(util.successFalse(status.BAD_REQUEST, err.message))})
+            .send(util.successFalse(err.status, err.message))})
     },
     updatePwd:(req, res)=>{
         User.updatePwd(req.body, req.headers.token)
@@ -32,7 +32,7 @@ module.exports = {
             .send(util.successTrue(status.OK, message.PWD_UPDATE_SUCCESS)))
         .catch(err => {
             res.status(err.status || 500)
-            .send(util.successFalse(status.BAD_REQUEST, err.message))})
+            .send(util.successFalse(err.status, err.message))})
     },
     updatePhone: async (req, res) => {
         User.updatePhone(req.body, req.headers.token)
@@ -41,6 +41,6 @@ module.exports = {
             .send(util.successTrue(status.OK, message.PHONE_NUM_UPDATE_SUCCESS)))
         .catch(err => {
             res.status(err.status || 500)
-            .send(util.successFalse(status.BAD_REQUEST, err.message))})
+            .send(util.successFalse(err.status, err.message))})
     }
 }
