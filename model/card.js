@@ -31,7 +31,8 @@ const card = {
         const result = await pool.queryParam_Parse(query,values);
         return result.map(cardData);
     },
-    readVisible: async (uuid) => {
+    readVisible: async (token) => {
+        const uuid = jwtExt.verify(token).data.uuid;
         const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx, visible, count, sequence FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
         const values = [uuid];
         const result = await pool.queryParam_Parse(query, values);
