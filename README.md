@@ -2,7 +2,7 @@
 	<img src="https://user-images.githubusercontent.com/39257919/71553942-423e6f80-2a5b-11ea-972f-364c5b896b60.png">
 </div>
 <div align="center">
-🗣 CUSE ME_iOS  💻
+🗣 CUSE ME_SERVER  💻
 <br>발달장애인을 위한 카드형 의사소통도구, 큐즈미
 </div>
 
