@@ -97,9 +97,9 @@
 
 ## 😁 Our team
 
-- 김강희 ([ganghee](https://github.com/ganghee))
-- 김해리 ([khl6235](https://github.com/khl6235))
-- 이시연 ([siyeons](https://github.com/siyeons))
-- 황채연 ([funnkiddo](https://github.com/funnkiddo))
+- 김강희 ([ganghee](https://github.com/ganghee)) : 
+- 김해리 ([khl6235](https://github.com/khl6235)) : 
+- 이시연 ([siyeons](https://github.com/siyeons)) : 
+- 황채연 ([funnkiddo](https://github.com/funnkiddo)) :  
 
 
