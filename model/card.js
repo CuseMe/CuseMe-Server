@@ -63,10 +63,18 @@ const card = {
                 verifyResult = await pool.queryParam_Parse(verifyQuery, verifyValues);
             }
             const userIdx = jwtExt.verify(token).data.userIdx;
-            const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
-            const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
-            const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
-            if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            let cardCreateResult = null;
+            if(!record){
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, serialNum) VALUES(?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, serialNum];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else{
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }
             const cardIdx = cardCreateResult.insertId;
             const sequenceQuery = `SELECT count(*) AS count FROM ${OWN_TABLE} WHERE userIdx = ?`;
             const sequenceValues = [userIdx];
