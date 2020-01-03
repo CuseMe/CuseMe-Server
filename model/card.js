@@ -31,8 +31,7 @@ const card = {
         const result = await pool.queryParam_Parse(query,values);
         return result.map(cardData);
     },
-    readVisible: async (token) => {
-        const uuid = jwtExt.verify(token).data.uuid;
+    readVisible: async (uuid) => {
         const query = `SELECT * FROM ${CARD_TABLE} JOIN (SELECT cardIdx, visible, count, sequence FROM ${USER_TABLE} JOIN ${OWN_TABLE} ON ${USER_TABLE}.userIdx = ${OWN_TABLE}.userIdx WHERE uuid = ? AND ${OWN_TABLE}.visible = 1) AS T WHERE T.cardIdx = ${CARD_TABLE}.cardIdx`;
         const values = [uuid];
         const result = await pool.queryParam_Parse(query, values);
@@ -85,6 +84,10 @@ const card = {
             const postValues = [cardIdx, userIdx, count, visible_boolean];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError; 
+            const query = `SELECT * FROM card WHERE cardIdx = ?`;
+            const value = [cardIdx];
+            const result = await pool.queryParam_Parse(query, value);
+            return result[0];
     },
     download: async (
         token,
@@ -96,11 +99,12 @@ const card = {
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
             const cardIdx = getResult[0].cardIdx;
-            const getSequenceQuery = `SELECT sequence FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND ${CARD_TABLE}.cardIdx = ?`;
-            const getSequenceValues = [cardIdx];
+            const getSequenceQuery = `SELECT count(sequence) as count FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND userIdx = ?`;
+            const getSequenceValues = [userIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
-            const sequence = getSequenceResult[0];
+            const sequence = getSequenceResult[0].count;
+            console.log(sequence)
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
@@ -130,6 +134,11 @@ const card = {
             const values = [newIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
+            const resultQuery = `SELECT * FROM card WHERE cardIdx = ?`;
+            const resultValue = [newIdx];
+            const resultResult = await pool.queryParam_Parse(resultQuery, resultValue);
+            return resultResult[0];
+        
     },
     updateAll: async(
         arr,

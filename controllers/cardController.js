@@ -27,7 +27,7 @@ module.exports = {
             ))
     },
     readVisible: async (req, res) => {
-        Card.readVisible(req.headers.token)
+        Card.readVisible(req.body.uuid)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_READ_VISIBLE_SUCCESS, result)))
@@ -48,9 +48,9 @@ module.exports = {
     },
     create: async(req, res) => {
         Card.create(req.files, req.body, req.headers.token)
-        .then(() =>
+        .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(status.OK, message.CARD_CREATE_SUCCESS)))
+            .send(util.successTrue(status.OK, message.CARD_CREATE_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.status, err.message)))
@@ -67,9 +67,9 @@ module.exports = {
     },
     update: async (req, res) => {
         Card.update(req.files, req.body, req.headers.token, req.params.cardIdx)
-        .then(() =>
+        .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(status.OK, message.CARD_UPDATE_SUCCESS)))
+            .send(util.successTrue(status.OK, message.CARD_UPDATE_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.status, err.message)))
