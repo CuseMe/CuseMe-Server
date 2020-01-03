@@ -125,10 +125,22 @@ const card = {
             if(!image || !title || !content) throw new ParameterError
             const userIdx = jwtExt.verify(token).data.userIdx;
             const serialNum = Math.random().toString(36).substring(3);
-            const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`; 
-            const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
-            const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
-            if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
+            if(!record){
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, serialNum) VALUES(?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, serialNum];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else{
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }
+            // const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`; 
+            // const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+            // const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+            // if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
+            
             const newIdx = cardCreateResult.insertId;
             const query = `UPDATE ${OWN_TABLE} SET cardIdx = ? WHERE userIdx = ? and cardIdx = ?`; 
             const values = [newIdx,userIdx,cardIdx]
