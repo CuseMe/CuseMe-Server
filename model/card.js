@@ -126,6 +126,10 @@ const card = {
             const values = [newIdx,userIdx,cardIdx]
             const result = await pool.queryParam_Parse(query, values);
             if(result.affectedRows == 0) throw new NotUpdatedError;
+            const resultQuery = `SELECT * FROM card WHERE cardIdx = ?`;
+            const resultValue = [newIdx];
+            const resultResult = await pool.queryParam_Parse(resultQuery, resultValue);
+            return resultResult[0];
         
     },
     updateAll: async(

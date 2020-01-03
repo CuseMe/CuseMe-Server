@@ -67,9 +67,9 @@ module.exports = {
     },
     update: async (req, res) => {
         Card.update(req.files, req.body, req.headers.token, req.params.cardIdx)
-        .then(() =>
+        .then(result =>
             res.status(status.OK)
-            .send(util.successTrue(status.OK, message.CARD_UPDATE_SUCCESS)))
+            .send(util.successTrue(status.OK, message.CARD_UPDATE_SUCCESS, result)))
         .catch(err =>
             res.status(err.status || 500)
             .send(util.successFalse(err.status, err.message)))
