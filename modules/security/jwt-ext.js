@@ -8,7 +8,7 @@ const statusCode = require('../utils/statusCode');
 
 const options = {
     algorithm: "HS256",
-    expiresIn: "24h",
+    expiresIn: "30d",
     issuer: "ganghee"
 };
 
