@@ -135,6 +135,7 @@ const card = {
     updateAll: async(
         arr,
         token) => {
+            // console.log(arr[0])
         if(!arr) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
         for (var i=0;i<arr.length;i++){
