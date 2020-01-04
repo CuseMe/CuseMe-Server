@@ -158,6 +158,7 @@ const card = {
             // console.log(arr[0])
         if(!arr) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
+        
         for (var i=0;i<arr.length;i++){
             const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
             const visible = arr[i].visible
@@ -166,6 +167,11 @@ const card = {
             const putResult = await pool.queryParam_Parse(putQuery, putValues);
             if(putResult.affectedRows == 0) throw new NotUpdatedError;
         }
+        const getQuery = `SELECT * FROM own WHERE userIdx = ?`;
+        const getValues = [userIdx];
+        const getResult = await pool.queryParam_Parse(getQuery, getValues);
+        console.log(getResult)
+        return getResult
     },
     delete: async (cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
