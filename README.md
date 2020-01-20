@@ -98,9 +98,9 @@
 ## 😁 Our team
 
 - 김강희 ([ganghee](https://github.com/ganghee)) :  카드 생성 api, 카드 수정 api, 데이터 스키마 작성,에러 처리 
-- 이시연 ([khl6235](https://github.com/khl6235)) : 카드 카운트 증가 api, 카드 삭제 api, 카드 상세조회 api, 카드 조회 api, 사용자 생성 api, readMe 작성, 에러 처리
-- 황채연 ([siyeons](https://github.com/siyeons)) : 서버배포, 통신체크, 비밀번호 수정api ,사용자 생성 api, jwt미들웨어 적용, api문서 작성 
--  ([funnkiddo](https://github.com/funnkiddo)) :  타임스탬프&로그 api, 장애인 화면 api, 보호자 비밀번호 입력api , 카드 다운로드 api, 로그인 쿼리 수정, 통신 체크, 에러 처리
+- 이시연 ([siyeons](https://github.com/siyeons)) : 카드 카운트 증가 api, 카드 삭제 api, 카드 상세조회 api, 카드 조회 api, 사용자 생성 api, readMe 작성, 에러 처리
+- 황채연 ([funnkiddo](https://github.com/funnkiddo)) : 서버배포, 통신체크, 비밀번호 수정api ,사용자 생성 api, jwt미들웨어 적용, api문서 작성 
+- 김해리 ([khl6235](https://github.com/khl6235)) :  타임스탬프&로그 api, 장애인 화면 api, 보호자 비밀번호 입력api , 카드 다운로드 api, 로그인 쿼리 수정, 통신 체크, 에러 처리
 
 
 
