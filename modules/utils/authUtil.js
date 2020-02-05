@@ -1,4 +1,4 @@
-const jwt = require('../security/jwt-ext');
+const jwt = require('../security/jwt');
 const resMessage = require('./responseMessage');
 const statusCode = require('./statusCode');
 const util = require('./util');
