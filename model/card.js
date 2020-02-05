@@ -155,15 +155,14 @@ const card = {
     updateAll: async(
         arr,
         token) => {
-        console.log(arr)
         if(!arr) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
-        
-        for (var i=0;i<arr.length;i++){
+        for (var i=0; i<arr.updateArr.length; i++){
+            console.log("arr" + arr[0])
             const putQuery = `UPDATE ${OWN_TABLE} SET sequence = ?, visible = ? WHERE cardIdx = ? and userIdx = ?`;
-            const visible = arr[i].visible
+            const visible = arr.updateArr[i].visible
             const visible_boolean = ~~Boolean(visible)
-            const putValues = [arr[i].sequence, visible_boolean, arr[i].cardIdx , userIdx];
+            const putValues = [arr.updateArr[i].sequence, visible_boolean, arr.updateArr[i].cardIdx , userIdx];
             const putResult = await pool.queryParam_Parse(putQuery, putValues);
             if(putResult.affectedRows == 0) throw new NotUpdatedError;
         }
