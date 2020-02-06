@@ -172,7 +172,7 @@ const card = {
         console.log(getResult)
         return getResult
     },
-    delete: async (cardIdx, token) => {
+    delete: async(cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
         const getQuery = `SELECT * FROM ${OWN_TABLE} WHERE cardIdx = ? AND userIdx = ?`;
         const getValues = [cardIdx, userIdx];
@@ -182,6 +182,15 @@ const card = {
         const deleteResult = await pool.queryParam_None(deleteQuery);
         if(deleteResult.affectedRows == 0) throw new NotDeletedError;
         return deleteResult;
+    },
+    hide: async(cardIdx, token) => {
+        if(!cardIdx) throw new ParameterError;
+        const userIdx = jwtExt.verify(token).data.userIdx;
+        const query = `UPDATE ${OWN_TABLE} SET visible = 0 WHERE userIdx = ? and cardIdx = ?`;
+        const values = [userIdx, cardIdx];
+        const putResult = await pool.queryParam_Parse(query, values);
+        if(putResult.affectedRows == 0) throw new NotUpdatedError;
+        return putResult
     }
 }
 

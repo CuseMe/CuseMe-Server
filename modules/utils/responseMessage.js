@@ -36,5 +36,7 @@ module.exports = {
     CARD_COUNT_SUCCESS: "카드 클릭 횟수 증가 성공",
     CARD_COUNT_FAIL: "카드 클릭 횟수 증가 실패",
     ALREADY_ID: "존재하는 ID 입니다.",
-    NO_CARD: "존재하지 않는 카드 입니다."
+    NO_CARD: "존재하지 않는 카드 입니다.",
+    CARD_HIDE_SUCCESS: "카드 숨기기 성공",
+    CARD_HIDE_FAIL: "카드 숨기기 실패",
 }
