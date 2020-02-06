@@ -100,9 +100,6 @@ const card = {
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
             const cardIdx = getResult[0].cardIdx;
-            const checkQuery = `SELECT * from own WHERE cardIdx = ${cardIdx}`;
-            const checkResult = await pool.queryParam_None(checkQuery);
-            if(checkResult[0].cardIdx == cardIdx) throw new DuplicatedEntryError;
             const getSequenceQuery = `SELECT count(sequence) as count FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND userIdx = ?`;
             const getSequenceValues = [userIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
