@@ -14,5 +14,6 @@ router.post('/:serialNum', LoggedIn, cpUpload, CardController.download);
 router.put('/:cardIdx', LoggedIn, cpUpload, CardController.update);
 router.put('/', LoggedIn, CardController.updateAll);
 router.delete('/:cardIdx', LoggedIn, CardController.delete);
+router.put('/:cardIdx/hide', LoggedIn, CardController.hide);
 
 module.exports = router;
