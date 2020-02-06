@@ -93,8 +93,8 @@ module.exports = {
             .send(util.successFalse(err.status, err.message))})
     },
     hide: async(req, res) => {
-        //const cardIdx = req.params.cardIdx
-        Card.hide(req.params.cardIdx, req.headers.token, req.body)
+        const cardIdx = req.params.cardIdx
+        Card.hide(cardIdx, req.headers.token)
         .then(() =>
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_HIDE_SUCCESS)))
