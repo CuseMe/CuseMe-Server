@@ -6,7 +6,8 @@ const {
     NotCreatedError,
     NotDeletedError,
     NotFoundError,
-    NotUpdatedError
+    NotUpdatedError,
+    DuplicatedEntryError,
 } = require('../errors');
 const CARD_TABLE = 'card';
 const OWN_TABLE = 'own';
@@ -99,12 +100,14 @@ const card = {
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
             const cardIdx = getResult[0].cardIdx;
+            const checkQuery = `SELECT * from own WHERE cardIdx = ${cardIdx}`;
+            const checkResult = await pool.queryParam_None(checkQuery);
+            if(checkResult[0].cardIdx == cardIdx) throw new DuplicatedEntryError;
             const getSequenceQuery = `SELECT count(sequence) as count FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND userIdx = ?`;
             const getSequenceValues = [userIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
             const sequence = getSequenceResult[0].count;
-            console.log(sequence)
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
