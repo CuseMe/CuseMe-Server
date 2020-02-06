@@ -98,19 +98,25 @@ const card = {
             const getValues = [serialNum];
             const getResult = await pool.queryParam_Parse(getQuery, getValues);
             if(getResult.length == 0) throw new NotFoundError;
-            const cardIdx = getResult[0].cardIdx;
+            const insertQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`
+            let serialNum1 = Math.random().toString(36).substring(3);
+            const insertValue = [getResult[0].title, getResult[0].content, getResult[0].image, getResult[0].record, serialNum1]
+            const insertResult = await pool.queryParam_Parse(insertQuery, insertValue);
+            if(insertResult.affectedRows == 0) throw new NotCreatedError;
             const getSequenceQuery = `SELECT count(sequence) as count FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${OWN_TABLE}.cardIdx = ${CARD_TABLE}.cardIdx AND userIdx = ?`;
             const getSequenceValues = [userIdx];
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
             const sequence = getSequenceResult[0].count;
-            console.log(sequence)
+            const countQuery = `SELECT COUNT(cardIdx) as count FROM ${CARD_TABLE}`
+            const countResult = await pool.queryParam_None(countQuery);
+            const cardIdx = countResult[0].count-1
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
             if(postResult.affectedRows == 0) throw new NotCreatedError;
             const query = `SELECT * FROM ${CARD_TABLE} JOIN ${OWN_TABLE} ON ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx WHERE ${CARD_TABLE}.serialNum = ?`;
-            const values = [serialNum]
+            const values = [serialNum1]
             const result = await pool.queryParam_Parse(query, values)
             const card = cardData(result[0]);
             return card
