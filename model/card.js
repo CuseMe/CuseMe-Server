@@ -190,11 +190,11 @@ const card = {
         if(deleteResult.affectedRows == 0) throw new NotDeletedError;
         return deleteResult;
     },
-    hide: async(cardIdx, token, flag) => {
-        if(!cardIdx || !flag) throw new ParameterError;
+    hide: async(cardIdx, token, isVisible) => {
+        if(!cardIdx || !isVisible) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
-        const flag_boolean = ~~Boolean(flag.flag);
-        if(flag_boolean == 1){
+        const flag_boolean = ~~Boolean(isVisible.isVisible);
+        if(flag_boolean == 0){
             const query = `UPDATE ${OWN_TABLE} SET visible = 0 WHERE userIdx = ? and cardIdx = ?`;
             const values = [userIdx, cardIdx];
             const putResult = await pool.queryParam_Parse(query, values);
