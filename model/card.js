@@ -173,11 +173,6 @@ const card = {
             const putResult = await pool.queryParam_Parse(putQuery, putValues);
             if(putResult.affectedRows == 0) throw new NotUpdatedError;
         }
-        const getQuery = `SELECT * FROM own WHERE userIdx = ?`;
-        const getValues = [userIdx];
-        const getResult = await pool.queryParam_Parse(getQuery, getValues);
-        console.log(getResult)
-        return getResult
     },
     delete: async(cardIdx, token) => {
         const userIdx = jwtExt.verify(token).data.userIdx;
