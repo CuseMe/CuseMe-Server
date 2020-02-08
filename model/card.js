@@ -190,26 +190,14 @@ const card = {
         if(deleteResult.affectedRows == 0) throw new NotDeletedError;
         return deleteResult;
     },
-    hide: async(cardIdx, token, isVisible) => {
-        if(!cardIdx || !isVisible) throw new ParameterError;
+    hide: async(cardIdx, token, {isVisible}) => {
+        if(!cardIdx) throw new ParameterError;
         const userIdx = jwtExt.verify(token).data.userIdx;
-        const flag_boolean = ~~Boolean(isVisible.isVisible);
-        if(flag_boolean == 0){
-            const query = `UPDATE ${OWN_TABLE} SET visible = 0 WHERE userIdx = ? and cardIdx = ?`;
-            const values = [userIdx, cardIdx];
-            const putResult = await pool.queryParam_Parse(query, values);
-            if(putResult.affectedRows == 0) throw new NotUpdatedError;
-            return putResult;
-        }
-        else{
-            const query = `UPDATE ${OWN_TABLE} SET visible = 1 WHERE userIdx = ? and cardIdx = ?`;
-            const values = [userIdx, cardIdx];
-            const putResult = await pool.queryParam_Parse(query, values);
-            if(putResult.affectedRows == 0) throw new NotUpdatedError;
-            return putResult;
-        }
+        const flag_boolean = ~~Boolean(isVisible)
+        const query = `UPDATE ${OWN_TABLE} SET visible = ${flag_boolean} WHERE userIdx = ${userIdx} and cardIdx = ${cardIdx}`;
+        const putResult = await pool.queryParam_None(query);
+        if(putResult.affectedRows == 0) throw new NotUpdatedError;
     }
-
 }
 
 module.exports = card;
