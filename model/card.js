@@ -38,10 +38,9 @@ const card = {
         const result = await pool.queryParam_Parse(query, values);
         return result.map(cardData);
     },
-    count: async (cardIdx, token) => {
-        const userIdx = jwtExt.verify(token).data.userIdx;
-        const query = `UPDATE ${CARD_TABLE} JOIN ${OWN_TABLE} SET count = count + 1 WHERE ${CARD_TABLE}.cardIdx = ${OWN_TABLE}.cardIdx AND ${CARD_TABLE}.cardIdx = ? AND ${OWN_TABLE}.userIdx = ?`;
-        const values = [cardIdx, userIdx];
+    count: async (cardIdx, uuid) => {
+        const query = `update ${OWN_TABLE} join ${USER_TABLE} on ${OWN_TABLE}.userIdx = ${USER_TABLE}.userIdx set count = count + 1 where ${OWN_TABLE}.cardIdx = ? and ${USER_TABLE}.uuid = ?`
+        const values = [cardIdx, uuid];
         const result = await pool.queryParam_Parse(query, values);
         if(result.affectedRows == 0) throw new NotFoundError;
     },
