@@ -8,7 +8,7 @@ const cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'record'
 router.get('/', LoggedIn, CardController.readAll);
 router.post('/visible', CardController.readVisible);
 router.get('/:cardIdx', LoggedIn, CardController.read);
-router.put('/:cardIdx/count', LoggedIn, CardController.count);
+router.put('/:cardIdx/count', CardController.count);
 router.post('/', LoggedIn, cpUpload, CardController.create);
 router.post('/:serialNum', LoggedIn, cpUpload, CardController.download);
 router.put('/:cardIdx', LoggedIn, cpUpload, CardController.update);

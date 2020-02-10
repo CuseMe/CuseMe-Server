@@ -38,7 +38,7 @@ module.exports = {
     },
     count: async (req, res) => {
         const cardIdx = req.params.cardIdx
-        Card.count(cardIdx, req.headers.token)
+        Card.count(cardIdx, req.body.uuid)
         .then(result =>
             res.status(status.OK)
             .send(util.successTrue(status.OK, message.CARD_COUNT_SUCCESS, result)))
