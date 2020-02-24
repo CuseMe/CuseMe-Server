@@ -137,14 +137,19 @@ const card = {
             const beforeResult = await pool.queryParam_Parse(beforeQuery, beforeValues);
             const beforeImage = beforeResult[0].image
             const beforeRecord = beforeResult[0].record
-            if(!image && !record && tts == "true"){ //image, record 둘다 바뀌지 않음
+            if(!image && !record && tts == "true"){ //image 바뀌지 않음, tts로 재생 record 가 null로 만들어짐
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image) VALUES(?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, serialNum, beforeImage];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else if(!image && !record && tts == "false"){ // image 바뀌지 않음 record 바뀌지 않음
                 const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image, record) VALUES(?, ?, ?, ?, ?)`;
                 const cardCreateValues = [title, content, serialNum, beforeImage, beforeRecord];
                 cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
                 if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
-            }else if(!image && !record && tts == "false"){ // image 바뀌지 않음 tts로 재생 record 가 null로 만들어짐
-                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image) VALUES(?, ?, ?, ?)`;
-                const cardCreateValues = [title, content, serialNum, beforeImage];
+            }else if(!image && record){ // image 바뀌지 않음 record 바뀜
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image, record) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, serialNum, beforeImage, record[0].location];
                 cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
                 if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
             }else if(image && !record && tts == "true"){ // image 바뀜 tts로 재생 record 가 null로 만들어짐
