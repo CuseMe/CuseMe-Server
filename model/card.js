@@ -125,28 +125,44 @@ const card = {
         {image,
         record},
         {title,
-        content},
+        content,
+        tts},
         token,
         cardIdx) => {
-            if(!image || !title || !content) throw new ParameterError
+            if(!title || !content) throw new ParameterError
             const userIdx = jwtExt.verify(token).data.userIdx;
             const serialNum = Math.random().toString(36).substring(3);
-            if(!record){
+            const beforeQuery = `SELECT ${CARD_TABLE}.image, ${CARD_TABLE}.record FROM ${OWN_TABLE} JOIN ${CARD_TABLE} WHERE ${CARD_TABLE}.cardIdx = ? AND userIdx = ?`;
+            const beforeValues = [cardIdx, userIdx]
+            const beforeResult = await pool.queryParam_Parse(beforeQuery, beforeValues);
+            const beforeImage = beforeResult[0].image
+            const beforeRecord = beforeResult[0].record
+            if(!image && !record && tts == "true"){ //image, record 둘다 바뀌지 않음
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image, record) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, serialNum, beforeImage, beforeRecord];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else if(!image && !record && tts == "false"){ // image 바뀌지 않음 tts로 재생 record 가 null로 만들어짐
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, serialNum, image) VALUES(?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, serialNum, beforeImage];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else if(image && !record && tts == "true"){ // image 바뀜 tts로 재생 record 가 null로 만들어짐
                 const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, serialNum) VALUES(?, ?, ?, ?)`;
                 const cardCreateValues = [title, content, image[0].location, serialNum];
                 cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
                 if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
-            }else{
-                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`;
-                const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
+            }else if(image && !record && tts == "false"){ // image 바뀜 record 바뀌지 않음
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, serialNum, record) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, serialNum, beforeRecord];
+                cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
+                if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
+            }else if(image && record){ // image 바뀜 record 바뀜
+                const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, serialNum, record) VALUES(?, ?, ?, ?, ?)`;
+                const cardCreateValues = [title, content, image[0].location, serialNum, record[0].location];
                 cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
                 if(cardCreateResult.affectedRows == 0) throw new NotCreatedError;
             }
-            // const cardCreateQuery = `INSERT INTO ${CARD_TABLE}(title, content, image, record, serialNum) VALUES(?, ?, ?, ?, ?)`; 
-            // const cardCreateValues = [title, content, image[0].location, record[0].location, serialNum];
-            // const cardCreateResult = await pool.queryParam_Parse(cardCreateQuery, cardCreateValues);
-            // if(cardCreateResult.affectedRows == 0) throw new NotUpdatedError;
-            
             const newIdx = cardCreateResult.insertId;
             const query = `UPDATE ${OWN_TABLE} SET cardIdx = ? WHERE userIdx = ? and cardIdx = ?`; 
             const values = [newIdx,userIdx,cardIdx]
@@ -156,7 +172,6 @@ const card = {
             const resultValue = [newIdx];
             const resultResult = await pool.queryParam_Parse(resultQuery, resultValue);
             return resultResult[0];
-        
     },
     updateAll: async(
         arr,
