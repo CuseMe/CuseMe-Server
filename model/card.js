@@ -108,9 +108,9 @@ const card = {
             const getSequenceResult = await pool.queryParam_Parse(getSequenceQuery, getSequenceValues);
             if(getSequenceResult.length == 0) throw new NotFoundError;
             const sequence = getSequenceResult[0].count;
-            const countQuery = `SELECT COUNT(cardIdx) as count FROM ${CARD_TABLE}`
+            const countQuery = `SELECT MAX(cardIdx) as count FROM ${CARD_TABLE}`
             const countResult = await pool.queryParam_None(countQuery);
-            const cardIdx = countResult[0].count-1
+            const cardIdx = countResult[0].count
             const postQuery = `INSERT INTO ${OWN_TABLE}(cardIdx, userIdx, sequence) VALUES(?, ?, ?)`;
             const postValues = [cardIdx, userIdx, sequence];
             const postResult = await pool.queryParam_Parse(postQuery, postValues);
