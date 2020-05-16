@@ -70,5 +70,14 @@ module.exports = {
         const value = [phoneNum, userIdx];
         const result = await db.queryParam_Parse(query, value);
         return result;
+    },
+    refreshToken: async ({uuid}) => {
+        const findUserQuery = `SELECT * FROM ${TABLE} WHERE uuid = ?`;
+        const findUserValues = [uuid];
+        const findUserResult = await db.queryParam_Parse(findUserQuery, findUserValues);
+        const user = findUserResult[0];
+        const userIdx = user.userIdx;
+        const jwtToken = jwtExt.publish({userIdx, uuid});
+        return {token :jwtToken.token};
     }
 }
