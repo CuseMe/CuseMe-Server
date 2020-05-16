@@ -42,5 +42,14 @@ module.exports = {
         .catch(err => {
             res.status(err.status || 500)
             .send(util.successFalse(err.status, err.message))})
+    },
+    refresh: async (req, res) => {
+        User.refreshToken(req.body)
+        .then(result =>
+            res.status(status.OK)
+            .send(util.successTrue(status.OK, message.REFRESH_TOKEN_SUCCESS, result)))
+        .catch(err => {
+            res.status(err.status || 500)
+            .send(util.successFalse(err.status, err.message))})
     }
 }

@@ -17,6 +17,8 @@ module.exports = {
     USER_UPDATE_FAIL:"유저 추가 실패",
     EXIST_DATA: "데이터가 있습니다.",
     NO_DATA:"데이터가 없습니다.",
+    REFRESH_TOKEN_SUCCESS:"리프래시 토큰 성공",
+    REFRESH_TOKEN_FAIL:"리프래시 토큰 실패",
 
     PHONE_NUM_UPDATE_SUCCESS: "전화번호 변경 성공",
 
